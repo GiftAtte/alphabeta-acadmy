@@ -5,12 +5,12 @@ import { Droplet, HardHat, Factory, Anchor, CheckCircle, Users } from 'lucide-re
 const IndustryFocusPage = () => {
   return (
     <>
-      <PageHeader 
-        title="Industry Focus" 
+      <PageHeader
+        title="Industry Focus"
         subtitle="Specialized safety training programs tailored to the unique challenges of different industries."
         backgroundImage="https://images.pexels.com/photos/754301/pexels-photo-754301.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
       />
-      
+
       {/* Intro */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -31,16 +31,16 @@ const IndustryFocusPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Industry Sections */}
       {industries.map((industry, index) => (
-        <IndustrySection 
+        <IndustrySection
           key={industry.id}
           industry={industry}
           isEven={index % 2 === 0}
         />
       ))}
-      
+
       {/* Client Success Stories */}
       <section className="py-16 bg-primary-900 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,10 +52,10 @@ const IndustryFocusPage = () => {
               Organizations that have transformed their safety performance through our industry-focused training programs.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {successStories.map((story, index) => (
-              <motion.div 
+              <motion.div
                 key={index}
                 className="bg-primary-800 p-6 rounded-lg"
                 initial={{ opacity: 0, y: 20 }}
@@ -65,9 +65,9 @@ const IndustryFocusPage = () => {
               >
                 <div className="flex items-center mb-4">
                   <div className="bg-white p-2 rounded-full mr-4">
-                    <img 
-                      src={story.logo} 
-                      alt={story.company} 
+                    <img
+                      src={story.logo}
+                      alt={story.company}
                       className="h-10 w-10 object-contain"
                     />
                   </div>
@@ -105,7 +105,7 @@ const IndustryFocusPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Custom Programs */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -115,26 +115,26 @@ const IndustryFocusPage = () => {
                 Custom Training <span className="text-secondary-600">Programs</span>
               </h2>
               <p className="text-neutral-600">
-                We can develop tailored training solutions to address your organization's specific safety challenges.
+                We can develop tailored training solutions to address your organization&apos;s specific safety challenges.
               </p>
             </div>
-            
+
             <div className="bg-neutral-50 rounded-lg p-8 shadow-sm border border-neutral-200">
               <div className="flex justify-center mb-6">
                 <Users className="h-16 w-16 text-secondary-600" />
               </div>
-              
+
               <p className="text-neutral-700 mb-6 text-center">
                 Our team of safety experts works closely with your organization to understand your unique needs, workplace environment, and specific industry challenges. We then design customized training programs that address these requirements while ensuring compliance with relevant regulations.
               </p>
-              
+
               <h3 className="text-xl font-heading font-semibold text-primary-900 mb-4 text-center">
                 Our Custom Program Development Process
               </h3>
-              
+
               <div className="space-y-4 mb-6">
                 {customProgramSteps.map((step, index) => (
-                  <motion.div 
+                  <motion.div
                     key={index}
                     className="flex"
                     initial={{ opacity: 0, x: -20 }}
@@ -158,7 +158,7 @@ const IndustryFocusPage = () => {
                   </motion.div>
                 ))}
               </div>
-              
+
               <div className="text-center">
                 <a
                   href="/contact"
@@ -194,7 +194,7 @@ const IndustrySection = ({ industry, isEven }: IndustrySectionProps) => {
     <section className={`py-16 ${isEven ? 'bg-white' : 'bg-neutral-50'}`}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row gap-12 items-center">
-          <motion.div 
+          <motion.div
             className={`lg:w-1/2 ${!isEven && 'lg:order-2'}`}
             initial={{ opacity: 0, x: isEven ? -20 : 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -209,15 +209,15 @@ const IndustrySection = ({ industry, isEven }: IndustrySectionProps) => {
                 {industry.name}
               </h2>
             </div>
-            
+
             <p className="text-neutral-700 mb-6">
               {industry.description}
             </p>
-            
+
             <h3 className="text-xl font-heading font-semibold text-primary-900 mb-4">
               Key Focus Areas
             </h3>
-            
+
             <ul className="space-y-3 mb-6">
               {industry.keyFocusAreas.map((area, index) => (
                 <li key={index} className="flex items-start">
@@ -226,7 +226,7 @@ const IndustrySection = ({ industry, isEven }: IndustrySectionProps) => {
                 </li>
               ))}
             </ul>
-            
+
             <a
               href="/courses"
               className="inline-block bg-secondary-600 hover:bg-secondary-700 text-white py-3 px-6 rounded-md transition-colors font-medium"
@@ -234,17 +234,17 @@ const IndustrySection = ({ industry, isEven }: IndustrySectionProps) => {
               View Related Courses
             </a>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             className={`lg:w-1/2 ${!isEven && 'lg:order-1'}`}
             initial={{ opacity: 0, x: isEven ? 20 : -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
             viewport={{ once: true }}
           >
-            <img 
-              src={industry.image} 
-              alt={industry.name} 
+            <img
+              src={industry.image}
+              alt={industry.name}
               className="rounded-lg shadow-lg w-full h-auto object-cover"
             />
           </motion.div>
@@ -360,7 +360,7 @@ const successStories = [
 const customProgramSteps = [
   {
     title: "Needs Assessment",
-    description: "We conduct a thorough assessment of your organization's safety needs, challenges, and objectives."
+    description: "We conduct a thorough assessment of your organization&apos;s safety needs, challenges, and objectives."
   },
   {
     title: "Program Design",

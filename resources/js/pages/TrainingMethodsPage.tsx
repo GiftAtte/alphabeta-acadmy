@@ -2,21 +2,22 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import PageHeader from '@/components/PageHeader';
 import { Users, BookOpen, Monitor, Lightbulb, BarChart3, Target, Zap, GraduationCap } from 'lucide-react';
+import Layout from '@/layouts/web-layout';
 
 const TrainingMethodsPage = () => {
   return (
-    <>
-      <PageHeader 
-        title="Training Methods" 
+    <Layout>
+      <PageHeader
+        title="Training Methods"
         subtitle="Discover our innovative approaches to safety education that maximize engagement and knowledge retention."
         backgroundImage="https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
       />
-      
+
       {/* Overview */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-12 items-center">
-            <motion.div 
+            <motion.div
               className="lg:w-1/2"
               initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -33,24 +34,24 @@ const TrainingMethodsPage = () => {
                 We continuously refine our teaching methodologies based on educational research and industry feedback to ensure our students receive the most effective safety training available. Our focus is on developing practical skills that can be immediately applied in the workplace.
               </p>
             </motion.div>
-            
-            <motion.div 
+
+            <motion.div
               className="lg:w-1/2"
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <img 
-                src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
-                alt="Training session at ALPHA BETA SAFETY ACADEMY" 
+              <img
+                src="https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                alt="Training session at ALPHA BETA SAFETY ACADEMY"
                 className="rounded-lg shadow-lg w-full h-auto object-cover"
               />
             </motion.div>
           </div>
         </div>
       </section>
-      
+
       {/* Training Approaches */}
       <section className="py-16 bg-neutral-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -62,10 +63,10 @@ const TrainingMethodsPage = () => {
               We employ a variety of teaching methods to ensure knowledge retention and skill development.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {trainingApproaches.map((approach, index) => (
-              <MethodCard 
+              <MethodCard
                 key={index}
                 icon={approach.icon}
                 title={approach.title}
@@ -76,7 +77,7 @@ const TrainingMethodsPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Interactive Learning */}
       <section className="py-16 bg-white overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -84,8 +85,8 @@ const TrainingMethodsPage = () => {
             <div className="lg:w-1/2 order-2 lg:order-1">
               <SimulationShowcase />
             </div>
-            
-            <motion.div 
+
+            <motion.div
               className="lg:w-1/2 order-1 lg:order-2"
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -119,7 +120,7 @@ const TrainingMethodsPage = () => {
           </div>
         </div>
       </section>
-      
+
       {/* Learning Outcomes */}
       <section className="py-16 bg-primary-900 text-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -131,10 +132,10 @@ const TrainingMethodsPage = () => {
               Our training methods are designed to achieve specific educational outcomes that enhance your safety expertise.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {learningOutcomes.map((outcome, index) => (
-              <motion.div 
+              <motion.div
                 key={index}
                 className="bg-primary-800 p-6 rounded-lg"
                 initial={{ opacity: 0, y: 20 }}
@@ -156,7 +157,7 @@ const TrainingMethodsPage = () => {
           </div>
         </div>
       </section>
-    </>
+    </Layout>
   );
 };
 
@@ -169,7 +170,7 @@ interface MethodCardProps {
 
 const MethodCard = ({ icon, title, description, delay }: MethodCardProps) => {
   return (
-    <motion.div 
+    <motion.div
       className="bg-white p-6 rounded-lg shadow-sm border border-neutral-200 flex flex-col items-center text-center"
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
@@ -196,19 +197,19 @@ const SimulationShowcase = () => {
   });
 
   return (
-    <div 
-      ref={ref} 
+    <div
+      ref={ref}
       className="relative h-96 rounded-lg overflow-hidden shadow-lg"
     >
-      <img 
-        src="https://images.pexels.com/photos/3862130/pexels-photo-3862130.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" 
-        alt="Interactive safety simulation" 
+      <img
+        src="https://images.pexels.com/photos/3862130/pexels-photo-3862130.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+        alt="Interactive safety simulation"
         className="w-full h-full object-cover"
       />
-      
+
       {inView && (
         <>
-          <motion.div 
+          <motion.div
             className="absolute top-4 left-4 bg-white bg-opacity-90 p-3 rounded-lg shadow-md"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -217,8 +218,8 @@ const SimulationShowcase = () => {
             <div className="text-primary-900 font-semibold">Hazard Identified</div>
             <div className="text-secondary-600 text-sm">Exposed wiring</div>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             className="absolute bottom-4 right-4 bg-primary-900 bg-opacity-90 p-3 rounded-lg shadow-md text-white"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -227,8 +228,8 @@ const SimulationShowcase = () => {
             <div className="font-semibold">Recommended Action</div>
             <div className="text-sm">Isolate area and report to supervisor</div>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-16 h-16 bg-secondary-600 rounded-full flex items-center justify-center text-white cursor-pointer"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}

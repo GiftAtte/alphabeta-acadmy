@@ -1,17 +1,31 @@
 import { useState, useEffect } from 'react';
 import { Link as InertiaLink, usePage } from '@inertiajs/react';
-import { Menu, X, Shield } from 'lucide-react';
+import { Menu, X, Award, Phone, Mail, MapPin, Clock, LogOut } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from './ui/button';
+import VerifyCertificate from './home/VerifyCertificate';
+import type { SharedData } from '@/types/index.d';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { url } = usePage();
+  const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
+  const page = usePage<SharedData>();
+  const { url } = page;
+  const { auth } = page.props;
+  const isLoggedIn = auth?.user !== undefined && auth?.user !== null;
+  const isAdmin = isLoggedIn && auth?.user?.role === 'admin';
+
+  // Add debugging log for development
+  useEffect(() => {
+    console.log('Current URL:', url);
+    console.log('Auth state:', auth);
+  }, [url, auth]);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
     return () => {
@@ -24,77 +38,250 @@ const Header = () => {
     { name: 'About', path: '/about' },
     { name: 'Courses', path: '/courses' },
     { name: 'Certifications', path: '/certifications' },
-    // { name: 'Training Methods', path: '/training-methods' },
-    // { name: 'Why Choose Us', path: '/why-choose-us' },
+    { name: 'Training Methods', path: '/training-methods' },
+    { name: 'Why Choose Us', path: '/why-choose-us' },
     { name: 'Contact', path: '/contact' },
   ];
 
   const isActive = (path: string) => {
-    return url === path;
+    if (path === '/') {
+      return url === path;
+    }
+    return url.startsWith(path);
   };
 
   return (
-    <header
-      className={cn(`w-full z-50 transition-all duration-300 bg-white py-3 shaow-md`,
-        isScrolled &&  'fixed bg-white/70 backdrop-blur-md border-b border-gray-200/50'
-      )}
-    >
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
-          <InertiaLink href="/" className="flex items-center space-x-2">
-            <img src='/images/logo.jpeg' className='w-16 h-16 object-cover rounded-full'/>
-          </InertiaLink>
-          <nav className="hidden lg:flex space-x-6">
-            {navLinks.map((link) => (
-              <InertiaLink
-                key={link.name}
-                href={link.path}
-                className={`font-medium text-[17px] transition-colors duration-200 hover:text-primary-400 text-gray-600 ${
-                  isActive(link.path)
-                    ? 'text-primary-300 '
-                    : isScrolled
-                      ? 'text-primary-900'
-                      : ''
-                }`}
-              >
-                {link.name}
-              </InertiaLink>
-            ))}
-          </nav>
-          <Button className=' cursor-pointer hidden lg:block' size={'lg'}>Verify Certificate</Button>
-
-          <button
-            className="lg:hidden p-2"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? (
-              <X className={`h-6 w-6 ${isScrolled ? 'text-primary-900' : 'text-primary'}`} />
-            ) : (
-              <Menu className={`h-6 w-6 ${isScrolled ? 'text-primary-900' : 'text-primary'}`} />
-            )}
-          </button>
+    <>
+      {/* Top Contact Bar - Hidden when scrolled */}
+      <div
+        className={cn(
+          "bg-primary text-primary-foreground py-2 transition-all duration-300",
+          isScrolled ? "opacity-0 h-0 py-0 overflow-hidden" : "opacity-100"
+        )}
+      >
+        <div className="container mx-auto px-4">
+          <div className="flex flex-wrap justify-between items-center">
+            <div className="flex items-center space-x-4">
+              <a href="tel:+2348123456789" className="flex items-center text-sm">
+                <Phone className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">+234 812 345 6789</span>
+              </a>
+              <a href="mailto:info@alphabeta.com" className="flex items-center text-sm">
+                <Mail className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">info@alphabeta.com</span>
+              </a>
+            </div>
+            <div className="hidden md:flex items-center space-x-4">
+              <div className="flex items-center text-sm">
+                <MapPin className="h-4 w-4 mr-1" />
+                <span>Port Harcourt, Nigeria</span>
+              </div>
+              <div className="flex items-center text-sm">
+                <Clock className="h-4 w-4 mr-1" />
+                <span>Mon-Fri: 8:00AM - 5:00PM</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-      {isMobileMenuOpen && (
-        <nav className="lg:hidden backdrop-blur-md bg-white/80 shadow-lg py-4 px-6 absolute w-full animate-slide-down border-t border-gray-200/50 z-50">
-          <div className="flex flex-col space-y-4">
-            {navLinks.map((link) => (
-              <InertiaLink
-                key={link.name}
-                href={link.path}
-                className={`font-medium text-sm transition-colors duration-200 hover:text-secondary-600 ${
-                  isActive(link.path) ? 'text-secondary-600' : 'text-primary-900'
-                }`}
-                onClick={() => setIsMobileMenuOpen(false)}
+
+      {/* Main Navigation - Fixed when scrolled */}
+      <header
+        className={cn(
+          "bg-white w-full z-50 transition-all duration-300",
+          isScrolled ? "fixed top-0 left-0 right-0 shadow-md" : "shadow-sm"
+        )}
+      >
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <a href="/" className="flex items-center space-x-3">
+              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary shadow-sm">
+                <img src="/images/logo.jpeg" className="w-full h-full object-cover" alt="Alpha Beta Safety Academy Logo" />
+              </div>
+              <div className="hidden md:block">
+                <h1 className="font-bold text-lg text-primary">ALPHA BETA</h1>
+                <p className="text-xs text-gray-600">SAFETY ACADEMY</p>
+              </div>
+            </a>
+
+            <nav className="hidden lg:flex space-x-6">
+              {navLinks.map((link) => (
+                <InertiaLink
+                  key={link.name}
+                  href={link.path}
+                  className={`font-medium text-sm transition-colors ${
+                    isActive(link.path)
+                      ? 'text-primary font-semibold border-b-2 border-primary'
+                      : 'text-gray-700 hover:text-primary'
+                  }`}
+                >
+                  {link.name}
+                </InertiaLink>
+              ))}
+            </nav>
+
+            <div className="hidden lg:flex items-center space-x-3">
+              {isLoggedIn && auth?.user ? (
+                <div className="flex items-center space-x-4">
+                  {isAdmin && (
+                    <InertiaLink href="/admin/dashboard">
+                      <Button variant="outline" size="sm">
+                        Admin Dashboard
+                      </Button>
+                    </InertiaLink>
+                  )}
+                  <InertiaLink href="/logout" method="post" as="button">
+                    <Button variant="ghost" size="sm">
+                      Logout
+                    </Button>
+                  </InertiaLink>
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                      {auth.user.name?.charAt(0)?.toUpperCase() || 'U'}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <InertiaLink href="/login">
+                    <Button variant="ghost" size="sm">
+                      Login
+                    </Button>
+                  </InertiaLink>
+                  <InertiaLink href="/student/enroll">
+                    <Button size="sm">
+                      Enroll Now
+                    </Button>
+                  </InertiaLink>
+                </div>
+              )}
+              <Button
+                size="sm"
+                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                onClick={() => setIsVerifyModalOpen(true)}
               >
-                {link.name}
-              </InertiaLink>
-            ))}
+                <Award className="mr-2 h-4 w-4" />
+                Verify Certificate
+              </Button>
+            </div>
+
+            <button
+              className="lg:hidden p-2 text-gray-500 hover:text-primary-600"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            >
+              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
-        </nav>
-      )}
-    </header>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="lg:hidden">
+            <div className="container mx-auto px-4 py-3 border-t">
+              <nav className="flex flex-col space-y-2">
+                {navLinks.map((link) => (
+                  <InertiaLink
+                    key={link.name}
+                    href={link.path}
+                    className={`px-3 py-2 rounded-md ${
+                      isActive(link.path)
+                        ? 'bg-primary text-primary-foreground font-medium'
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-primary'
+                    }`}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.name}
+                  </InertiaLink>
+                ))}
+              </nav>
+
+              <div className="mt-4 flex flex-col space-y-2">
+                {isLoggedIn && auth?.user ? (
+                  <div className="space-y-1">
+                    {isAdmin && (
+                      <InertiaLink
+                        href="/admin/dashboard"
+                        className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground/80 hover:bg-muted hover:border-primary/40 hover:text-foreground"
+                      >
+                        Admin Dashboard
+                      </InertiaLink>
+                    )}
+                    <InertiaLink
+                      href="/profile"
+                      className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground/80 hover:bg-muted hover:border-primary/40 hover:text-foreground"
+                    >
+                      My Profile
+                    </InertiaLink>
+                    <InertiaLink
+                      href="/logout"
+                      method="post"
+                      as="button"
+                      className="block w-full text-left pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground/80 hover:bg-muted hover:border-primary/40 hover:text-foreground"
+                    >
+                      Logout
+                    </InertiaLink>
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <InertiaLink
+                      href="/login"
+                      className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground/80 hover:bg-muted hover:border-primary/40 hover:text-foreground"
+                    >
+                      Login
+                    </InertiaLink>
+                    <InertiaLink
+                      href="/student/enroll"
+                      className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium text-foreground/80 hover:bg-muted hover:border-primary/40 hover:text-foreground"
+                    >
+                      Enroll Now
+                    </InertiaLink>
+                  </div>
+                )}
+                <Button
+                  className="justify-center bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                  size="sm"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsVerifyModalOpen(true);
+                  }}
+                >
+                  <Award className="mr-2 h-4 w-4" />
+                  Verify Certificate
+                </Button>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-gray-100">
+                <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Contact Us</h3>
+                <div className="space-y-2">
+                  <a href="tel:+2348123456789" className="flex items-center text-sm text-gray-600">
+                    <Phone className="h-4 w-4 mr-2 text-primary" />
+                    <span>+234 812 345 6789</span>
+                  </a>
+                  <a href="mailto:info@alphabeta.com" className="flex items-center text-sm text-gray-600">
+                    <Mail className="h-4 w-4 mr-2 text-primary" />
+                    <span>info@alphabeta.com</span>
+                  </a>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <MapPin className="h-4 w-4 mr-2 text-primary" />
+                    <span>Lagos, Nigeria</span>
+                  </div>
+                  <div className="flex items-center text-sm text-gray-600">
+                    <Clock className="h-4 w-4 mr-2 text-primary" />
+                    <span>Mon-Fri: 8:00AM - 5:00PM</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </header>
+
+      {/* Add padding when header is fixed to prevent content jump */}
+      {isScrolled && <div className="h-[72px]"></div>}
+
+      {/* Verification Modal */}
+      <VerifyCertificate isOpen={isVerifyModalOpen} onClose={() => setIsVerifyModalOpen(false)} />
+    </>
   );
 };
 

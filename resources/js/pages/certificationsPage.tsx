@@ -4,8 +4,9 @@ import Layout from '@/layouts/web-layout';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion } from 'framer-motion';
-import { Award, ChevronRight, CheckCircle, Shield } from 'lucide-react';
+import { Award, ChevronRight, CheckCircle, Shield, Search } from 'lucide-react';
 import { useState } from 'react';
+import VerifyModal from '@/components/home/VerifyModal';
 
 interface CertificateDetails {
   name: string;
@@ -18,7 +19,7 @@ interface CertificateDetails {
 const CertificationsPage = () => {
   const [certificateId, setCertificateId] = useState('');
   const [userData, setUserData] = useState<CertificateDetails | null>(null);
-
+  const [isVerifyModalOpen, setIsVerifyModalOpen] = useState(false);
 
   const handleVerify = () => {
     // Simulate verification
@@ -35,6 +36,7 @@ const CertificationsPage = () => {
       setUserData(null);
     }
   };
+
   return (
     <>
       <Layout>
@@ -44,15 +46,13 @@ const CertificationsPage = () => {
           backgroundImage="/images/img10.jpeg"
           content={
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-4xl mt-5">
-             
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <Input
-                  placeholder="Enter Certificate ID"
-                  value={certificateId}
-                  onChange={(e) => setCertificateId(e.target.value)}
-                  className="w-full h-14 text-gray-800 bg-white"
-                />
-                <Button onClick={handleVerify} size={'lg'} className="w-full sm:w-auto h-14 ">
+                <Button
+                  onClick={() => setIsVerifyModalOpen(true)}
+                  size={'lg'}
+                  className="w-full sm:w-auto h-14 bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center gap-2"
+                >
+                  <Award className="h-5 w-5" />
                   Verify Certificate
                 </Button>
               </div>
@@ -79,14 +79,8 @@ const CertificationsPage = () => {
                 </motion.div>
               )}
             </div>
-
           }
         />
-
-        {/* Intro Section */}
-
-
-
 
         {/* Certification Process */}
         <section className="py-16 bg-white">
@@ -167,6 +161,9 @@ const CertificationsPage = () => {
           </div>
         </section>
       </Layout>
+
+      {/* Verification Modal */}
+      <VerifyModal isOpen={isVerifyModalOpen} onClose={() => setIsVerifyModalOpen(false)} />
     </>
   );
 };
