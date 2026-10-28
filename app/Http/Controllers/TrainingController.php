@@ -24,7 +24,7 @@ class TrainingController extends Controller
 
         // Always return Inertia render for web routes
         $trainings = Training::latest()
-            ->select('name', 'code', 'duration', 'level', 'price', 'status', 'category', 'id')
+            ->select('name', 'code', 'description', 'duration', 'level', 'price', 'status', 'category', 'id')
             ->paginate(10);
 
         // Gather statistics for dashboard charts
@@ -190,10 +190,20 @@ class TrainingController extends Controller
         ]);
 
         if ($validator->fails()) {
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
         $training->update($validator->validated());
+
+        if ($request->ajax() || $request->expectsJson()) {
+            return response()->json([
+                'message' => 'Training updated successfully!',
+                'training' => $training
+            ]);
+        }
 
         return redirect()->route('admin.trainings.index')->with('success', 'Training updated successfully!');
     }

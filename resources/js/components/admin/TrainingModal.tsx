@@ -95,38 +95,20 @@ export default function TrainingModal({ isOpen, onClose, training, mode, onSucce
 
     try {
       // Convert numeric fields
+      // Axios sends the always-fresh XSRF-TOKEN cookie as X-XSRF-TOKEN on its own.
+      // Do not send the <meta> token: it goes stale after login/session regeneration.
       const submissionData = {
         ...formData,
+        duration: formData.duration === '' ? null : String(formData.duration),
         price: formData.price === '' ? null : Number(formData.price),
-        duration: formData.duration === '' ? null : Number(formData.duration),
         max_students: formData.max_students === '' ? null : Number(formData.max_students),
       };
+      const config = { headers: { Accept: 'application/json' } };
 
       if (mode === 'create') {
-        await axios.post('/admin/trainings', submissionData, {
-          headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'X-Requested-With': 'XMLHttpRequest'
-          }
-        });
+        await axios.post('/admin/trainings', submissionData, config);
       } else if (training?.id) {
-        // Add _method field for Laravel to handle PUT request
-        const formData = new FormData();
-        formData.append('_method', 'PUT');
-        Object.entries(submissionData).forEach(([key, value]) => {
-          formData.append(key, value as string);
-        });
-
-        await axios.post(`/admin/trainings/${training.id}`, formData, {
-          headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
-            'Accept': 'application/json',
-            'Content-Type': 'multipart/form-data',
-            'X-Requested-With': 'XMLHttpRequest'
-          }
-        });
+        await axios.put(`/admin/trainings/${training.id}`, submissionData, config);
       }
 
       onSuccess();

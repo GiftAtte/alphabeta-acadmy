@@ -110,12 +110,7 @@ export default function TrainingsIndex({ trainings, statistics }: TrainingsPageP
 
     try {
       await axios.delete(`/admin/trainings/${trainingIdToDelete}`, {
-        headers: {
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'X-Requested-With': 'XMLHttpRequest'
-        }
+        headers: { Accept: 'application/json' }
       });
 
       // Update local state

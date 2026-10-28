@@ -90,6 +90,14 @@ class StudentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    /**
+     * Inertia visits are also XHR, so they must be excluded to keep their redirect flow.
+     */
+    private function wantsPlainJson(Request $request): bool
+    {
+        return ! $request->header('X-Inertia') && ($request->ajax() || $request->expectsJson());
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -106,6 +114,9 @@ class StudentController extends Controller
         ]);
 
         if ($validator->fails()) {
+            if ($this->wantsPlainJson($request)) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -122,6 +133,10 @@ class StudentController extends Controller
         }
 
         $student = Student::create($data);
+
+        if ($this->wantsPlainJson($request)) {
+            return response()->json(['message' => 'Student created successfully!', 'student' => $student], 201);
+        }
 
         // Inertia requests automatically receive a 303 redirect response
         return redirect()->route('students.index')->with('success', 'Student created successfully!');
@@ -158,6 +173,9 @@ class StudentController extends Controller
         ]);
 
         if ($validator->fails()) {
+            if ($this->wantsPlainJson($request)) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -175,6 +193,10 @@ class StudentController extends Controller
 
         $student->update($data);
 
+        if ($this->wantsPlainJson($request)) {
+            return response()->json(['message' => 'Student updated successfully!', 'student' => $student]);
+        }
+
         return redirect()->route('students.index')->with('success', 'Student updated successfully!');
     }
 
@@ -184,6 +206,10 @@ class StudentController extends Controller
     public function destroy(Request $request, Student $student)
     {
         $student->delete();
+
+        if ($this->wantsPlainJson($request)) {
+            return response()->json(['message' => 'Student deleted successfully!']);
+        }
 
         return redirect()->route('students.index')->with('success', 'Student deleted successfully!');
     }
