@@ -22,9 +22,11 @@ class LeadController extends Controller
      */
     public function index()
     {
-         $this->authorize('viewAny', Lead::class);
+        $this->authorize('viewAny', Lead::class);
 
-        $leads = Lead::with('training')->orderBy('created_at', 'desc')->paginate(10);
+        $leads = Lead::with(['training' => function($query) {
+            $query->select('id', 'name');
+        }])->orderBy('created_at', 'desc')->paginate(10);
 
         return Inertia::render('Admin/Leads/Index', [
             'leads' => $leads
@@ -94,12 +96,12 @@ class LeadController extends Controller
      * Update the specified lead in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\Lead  $lead
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Lead $lead)
     {
-        $this->authorize('update', Lead::class);
+        $this->authorize('update', $lead);
 
         $validator = Validator::make($request->all(), [
             'status' => 'required|string|in:new,contacted,qualified,converted,closed',
@@ -107,31 +109,53 @@ class LeadController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator);
+            return back()->withErrors($validator);
         }
 
-        $lead = Lead::findOrFail($id);
-        $lead->status = $request->status;
-        $lead->notes = $request->notes;
-        $lead->updated_by = Auth::id();
-        $lead->save();
+        try {
+            $lead->status = $request->status;
+            $lead->notes = $request->notes;
+            $lead->updated_by = Auth::id();
+            $lead->save();
 
-        return redirect()->back()->with('success', 'Lead updated successfully.');
+            return back()->with('success', 'Lead updated successfully.');
+        } catch (\Exception $e) {
+            Log::error('Lead update failed: ' . $e->getMessage());
+            return back()->with('error', 'Failed to update lead.');
+        }
     }
 
     /**
      * Remove the specified lead from storage.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Lead  $lead
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, Lead $lead)
     {
-        $this->authorize('delete', Lead::class);
+        $this->authorize('delete', $lead);
 
-        $lead = Lead::findOrFail($id);
-        $lead->delete();
+        try {
+            $lead->delete();
 
-        return redirect()->route('admin.leads.index')->with('success', 'Lead deleted successfully.');
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Lead deleted successfully'
+                ]);
+            }
+
+            return redirect()->route('admin.leads.index')->with('success', 'Lead deleted successfully.');
+        } catch (\Exception $e) {
+            Log::error('Lead deletion failed: ' . $e->getMessage());
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to delete lead'
+                ], 500);
+            }
+            return redirect()->route('admin.leads.index')->with('error', 'Failed to delete lead.');
+        }
     }
 }

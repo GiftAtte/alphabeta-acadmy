@@ -135,7 +135,7 @@ class TrainingsTableSeeder extends Seeder
                 'status' => 'active',
             ],
             [
-                'name' => 'HAZMAT Handling & Response',
+                'name' => 'Material Handling & Safety',
                 'code' => 'HHR-013',
                 'description' => 'Handling, storage, and emergency response for hazardous materials',
                 'duration' => '4 days',

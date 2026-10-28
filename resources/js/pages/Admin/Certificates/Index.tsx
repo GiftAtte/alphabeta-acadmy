@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AdminLayout from '@/layouts/admin-app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Award, Pencil, Trash2, CheckCircle, XCircle, AlertCircle, CalendarDays, AlertTriangle, BookOpen } from 'lucide-react';
@@ -85,7 +85,7 @@ export default function CertificatesIndex({ certificates, statistics }: Certific
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [certificateIdToDelete, setCertificateIdToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [certificatesList, setCertificatesList] = useState(certificates.data);
+  const [currentPage, setCurrentPage] = useState(certificates.current_page);
 
   const openCreateModal = () => {
     setModalMode('create');
@@ -113,7 +113,11 @@ export default function CertificatesIndex({ certificates, statistics }: Certific
       await axios.delete(`/admin/certificates/${certificateIdToDelete}`);
 
       // Update local state
-      setCertificatesList(prev => prev.filter(cert => cert.id !== certificateIdToDelete));
+      router.visit('/admin/certificates', {
+        preserveState: false,
+        preserveScroll: false,
+        replace: true
+      });
 
       toast.success('Certificate deleted successfully');
       setIsConfirmDeleteOpen(false);
@@ -126,9 +130,21 @@ export default function CertificatesIndex({ certificates, statistics }: Certific
     }
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    router.visit(`/admin/certificates?page=${page}`, {
+      preserveState: true,
+      preserveScroll: true,
+      only: ['certificates']
+    });
+  };
+
   const handleCertificateSaved = () => {
-    // Refresh the data
-    window.location.reload();
+    router.visit('/admin/certificates', {
+      preserveState: false,
+      preserveScroll: false,
+      replace: true
+    });
   };
 
   const formatDate = (dateString: string | null) => {
@@ -345,15 +361,20 @@ export default function CertificatesIndex({ certificates, statistics }: Certific
         <Card>
           <CardHeader>
             <CardTitle>All Certificates</CardTitle>
-            <CardDescription>Manage and view all certificates</CardDescription>
+            <CardDescription>Manage certificates and their status</CardDescription>
           </CardHeader>
           <CardContent>
             <DataTable
               columns={columns}
-              data={certificatesList}
+              data={certificates.data}
               searchKey="certificate_number"
               searchPlaceholder="Search by certificate number..."
               tablePrefix="certificates"
+              rowsPerPage={2}
+              pageCount={certificates.last_page}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              totalItems={certificates.total}
             />
           </CardContent>
         </Card>

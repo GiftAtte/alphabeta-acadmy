@@ -102,6 +102,8 @@ class TrainingController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info('Training store method called', ['request_data' => $request->all()]);
+
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'code' => 'required|string|max:50|unique:trainings,code',
@@ -114,20 +116,49 @@ class TrainingController extends Controller
         ]);
 
         if ($validator->fails()) {
+            Log::error('Training validation failed', ['errors' => $validator->errors()->toArray()]);
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json(['errors' => $validator->errors()], 422);
+            }
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $validator->validated();
+        try {
+            $data = $validator->validated();
+            Log::info('Validated data', ['data' => $data]);
 
-        // Set default status if not provided
-        if (empty($data['status'])) {
-            $data['status'] = 'active';
+            // Set default status if not provided
+            if (empty($data['status'])) {
+                $data['status'] = 'active';
+            }
+
+            $training = Training::create($data);
+            Log::info('Training created successfully', ['training_id' => $training->id]);
+
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Training created successfully!',
+                    'training' => $training
+                ], 201);
+            }
+
+            return redirect()->route('admin.trainings.index')->with('success', 'Training created successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error creating training', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Failed to create training. Please try again.'
+                ], 500);
+            }
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Failed to create training. Please try again.');
         }
-
-        $training = Training::create($data);
-
-        // Inertia requests automatically receive a 303 redirect response
-        return redirect()->route('trainings.index')->with('success', 'Training created successfully!');
     }
 
     /**
@@ -164,7 +195,7 @@ class TrainingController extends Controller
 
         $training->update($validator->validated());
 
-        return redirect()->route('trainings.index')->with('success', 'Training updated successfully!');
+        return redirect()->route('admin.trainings.index')->with('success', 'Training updated successfully!');
     }
 
     /**
@@ -172,9 +203,25 @@ class TrainingController extends Controller
      */
     public function destroy(Request $request, Training $training)
     {
-        $training->delete();
+        try {
+            $training->delete();
 
-        return redirect()->route('trainings.index')->with('success', 'Training deleted successfully!');
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Training deleted successfully!'
+                ]);
+            }
+
+            return redirect()->route('admin.trainings.index')->with('success', 'Training deleted successfully!');
+        } catch (\Exception $e) {
+            if ($request->ajax() || $request->expectsJson()) {
+                return response()->json([
+                    'message' => 'Failed to delete training. It may be associated with other records.'
+                ], 422);
+            }
+
+            return redirect()->route('admin.trainings.index')->with('error', 'Failed to delete training. It may be associated with other records.');
+        }
     }
 
     /**

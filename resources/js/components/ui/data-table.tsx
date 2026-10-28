@@ -3,7 +3,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type SortingState,
@@ -23,6 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createColumns, createRowKey } from "@/utils/tableUtils";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DataTableProps<TData> {
   columns: ColumnDef<TData>[];
@@ -32,6 +32,10 @@ interface DataTableProps<TData> {
   showColumnToggle?: boolean;
   rowsPerPage?: number;
   tablePrefix?: string;
+  pageCount?: number;
+  currentPage?: number;
+  onPageChange?: (page: number) => void;
+  totalItems?: number;
 }
 
 export function DataTable<TData>({
@@ -42,6 +46,10 @@ export function DataTable<TData>({
   showColumnToggle = false,
   rowsPerPage = 10,
   tablePrefix = "table",
+  pageCount,
+  currentPage = 1,
+  onPageChange,
+  totalItems,
 }: DataTableProps<TData>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
@@ -56,9 +64,8 @@ export function DataTable<TData>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
@@ -67,11 +74,8 @@ export function DataTable<TData>({
       columnFilters,
       columnVisibility,
     },
-    initialState: {
-      pagination: {
-        pageSize: rowsPerPage,
-      },
-    },
+    manualPagination: true, // Tell the table we're handling pagination manually
+    pageCount: pageCount ?? -1,
   });
 
   // Create a unique key for rows that doesn't expose the actual ID
@@ -79,8 +83,6 @@ export function DataTable<TData>({
     if (row.id) {
       return createRowKey(tablePrefix, row.id);
     }
-
-    // Fallback to index if no id is present
     return `${tablePrefix}-row-${row.index}`;
   };
 
@@ -104,7 +106,6 @@ export function DataTable<TData>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  // Skip rendering headers for hidden columns
                   if (header.column.getIsVisible() === false) {
                     return null;
                   }
@@ -146,23 +147,64 @@ export function DataTable<TData>({
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
+      <div className="flex items-center justify-between space-x-2 py-4">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {totalItems !== undefined && (
+            <span>
+              Showing {((currentPage - 1) * rowsPerPage) + 1} to {Math.min(currentPage * rowsPerPage, totalItems)} of {totalItems} entries
+            </span>
+          )}
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange?.(currentPage - 1)}
+            disabled={currentPage <= 1}
+          >
+            <ChevronLeft className="h-4 w-4 mr-1" />
+            Previous
+          </Button>
+          <div className="flex items-center gap-1">
+            {Array.from({ length: pageCount || 0 }, (_, i) => i + 1).map((page) => {
+              // Show first page, last page, current page, and pages around current page
+              if (
+                page === 1 ||
+                page === pageCount ||
+                (page >= currentPage - 1 && page <= currentPage + 1)
+              ) {
+                return (
+                  <Button
+                    key={page}
+                    variant={page === currentPage ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => onPageChange?.(page)}
+                    className="w-8 h-8 p-0"
+                  >
+                    {page}
+                  </Button>
+                );
+              }
+              // Show ellipsis for gaps
+              if (
+                (page === 2 && currentPage > 3) ||
+                (page === pageCount - 1 && currentPage < pageCount - 2)
+              ) {
+                return <span key={page} className="px-2">...</span>;
+              }
+              return null;
+            })}
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => onPageChange?.(currentPage + 1)}
+            disabled={currentPage >= (pageCount || 0)}
+          >
+            Next
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
+        </div>
       </div>
     </div>
   );

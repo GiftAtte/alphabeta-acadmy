@@ -16,18 +16,16 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Check if user is authenticated and has admin role
-        if (!Auth::check() || Auth::user()->role !== 'admin') {
-            if ($request->wantsJson()) {
+        // Check if user is authenticated and is an admin
+        if (!Auth::check() || !Auth::user()->isAdmin()) {
+            if ($request->header('X-Inertia')) {
+                return redirect()->route('home')->with('error', 'You do not have permission to access the admin area.');
+            }
+
+            if ($request->wantsJson() || $request->ajax() || $request->expectsJson()) {
                 return response()->json(['error' => 'Unauthorized. Admin access required.'], 403);
             }
 
-            // If it's an AJAX request or expects JSON, return JSON response
-            if ($request->ajax() || $request->expectsJson()) {
-                return response()->json(['error' => 'Unauthorized. Admin access required.'], 403);
-            }
-
-            // Redirect to home page for regular requests
             return redirect()->route('home')->with('error', 'You do not have permission to access the admin area.');
         }
 

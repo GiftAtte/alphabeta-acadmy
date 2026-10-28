@@ -1,13 +1,12 @@
 import { ImgHTMLAttributes } from 'react';
 
 export default function AppLogoIcon(props: ImgHTMLAttributes<HTMLImageElement>) {
-    const { className, ...rest } = props;
     return (
         <img
+            {...props}
             src="/images/logo.jpeg"
-            alt="AlphaBeta Academy"
-            className={`rounded-md ${className || ''}`}
-            {...rest}
+            alt="Alpha Beta Safety Academy Logo"
+            className={`h-8 w-auto ${props.className || ''}`}
         />
     );
 }

@@ -168,7 +168,7 @@ export default function VerifyCertificate({ isOpen, onClose }: VerifyCertificate
                 </div>
                 <h3 className="mt-3 text-lg font-medium">Certificate Verified!</h3>
                 <p className="mt-2 text-sm text-muted-foreground">
-                  This certificate is valid and was issued by Alpha Beta Academy.
+                  This certificate is valid and was issued by Alpha Beta Safety Academy.
                 </p>
               </div>
             ) : (

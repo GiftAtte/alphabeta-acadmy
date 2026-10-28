@@ -52,7 +52,7 @@ class LeadPolicy
      * @param  \App\Models\Lead  $lead
      * @return bool
      */
-    public function update(User $user)
+    public function update(User $user, Lead $lead)
     {
         return $user->hasRole('admin');
     }
@@ -64,7 +64,7 @@ class LeadPolicy
      * @param  \App\Models\Lead  $lead
      * @return bool
      */
-    public function delete(User $user)
+    public function delete(User $user, Lead $lead)
     {
         return $user->hasRole('admin');
     }

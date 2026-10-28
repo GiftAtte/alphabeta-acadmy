@@ -12,14 +12,14 @@
       return (
         <>
         <Layout>
-          
-          <PageHeader 
-            title="About Us" 
+
+          <PageHeader
+            title="About Us"
             subtitle="Learn more about ALPHA BETA SAFETY ACADEMY and our commitment to world-class safety training."
             backgroundImage="/images/img3.jpeg"
           />
-          
-        
+
+
         <section className="py-16">
   <div className="px-4 lg:px-8">
     <div className="flex flex-col gap-12 items-center">
@@ -31,12 +31,12 @@
         className="max-w-4xl"
       >
         <h2 className="text-3xl md:text-4xl font-heading font-bold text-primary-900 mb-6 text-center">
-          ALPHA BETA <span className="text-secondary-600">SAFETY ACADEMY</span>
+          ALPHA BETA <span className="text-secondary-600">SAFETY ACADEMY (ABSA)   </span>
         </h2>
 
         <div className="text-neutral-700 space-y-6">
           <p>
-            <strong>ALPHA BETA SAFETY ACADEMY</strong> is a world-class safety training institute offering comprehensive, globally recognized certifications. We utilize modern training methods and provide a strong foundation for professional development in safety and risk management. We stand out for our quality and global accreditations, including <strong>OSHAssociation UK</strong> and the <strong>Institute of Marine, Port and Terminal Management Professionals, USA</strong>.
+            <strong>ALPHA BETA SAFETY ACADEMY (ABSA) RC # 6874094</strong> is a world-class safety training institute offering comprehensive, globally recognized certifications. We utilize modern training methods and provide a strong foundation for professional development in safety and risk management. We stand out for our quality and global accreditations, including <strong>OSHAssociation UK</strong> and the <strong>Chartered Institute of Marine Port Terminal Management USA</strong>.
           </p>
 
           <p>
@@ -60,7 +60,7 @@
           </ul>
 
           <p>
-            <strong>ALPHA BETA SAFETY ACADEMY</strong> stands as a premier example of a world-class safety training institute in Nigeria. We are internationally accredited and provide a wide range of certifications and consulting services, especially in the oil & gas, construction, and manufacturing sectors.
+            <strong>ALPHA BETA SAFETY ACADEMY (ABSA) RC # 6874094</strong> stands as a premier example of a world-class safety training institute in Nigeria. We are internationally accredited and provide a wide range of certifications and consulting services, especially in the oil & gas, construction, and manufacturing sectors.
           </p>
 
           <p>
@@ -72,7 +72,7 @@
   </div>
 </section>
 
-      
+
           <section className="py-16 bg-neutral-50">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-16">
@@ -83,21 +83,21 @@
                   The principles that guide our operations and decision-making.
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <MVVCard 
+                <MVVCard
                   title="Mission"
                   icon={<Flag className="h-12 w-12 text-secondary-600" />}
                   content="To empower individuals and organizations with comprehensive safety knowledge and skills that prevent workplace incidents and create safer environments globally."
                 />
-                
-                <MVVCard 
+
+                <MVVCard
                   title="Vision"
                   icon={<Target className="h-12 w-12 text-secondary-600" />}
                   content="To be the foremost safety training institute, recognized worldwide for excellence in safety education and certification, contributing to incident-free workplaces across all industries."
                 />
-                
-                <MVVCard 
+
+                <MVVCard
                   title="Values"
                   icon={<Heart className="h-12 w-12 text-secondary-600" />}
                   content="Excellence, Integrity, Innovation, Practical Application, and Continuous Improvement form the cornerstone of our approach to safety training."
@@ -105,8 +105,8 @@
               </div>
             </div>
           </section>
-          
-        
+
+
           {/* <section className="py-16">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-12">
@@ -117,10 +117,10 @@
                   Our training programs are recognized by leading global safety organizations, ensuring that our certifications hold value worldwide.
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {accreditations.map((accreditation) => (
-                  <AccreditationCard 
+                  <AccreditationCard
                     key={accreditation.id}
                     name={accreditation.name}
                     description={accreditation.description}
@@ -130,8 +130,8 @@
               </div>
             </div>
           </section> */}
-          
-        
+
+
           <section className="py-16  ">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8">
               <div className="text-center mb-12">
@@ -142,10 +142,10 @@
                   Our unique approach to safety training sets us apart from other institutions.
                 </p>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
                 {worldClassFeatures.map((feature) => (
-                  <motion.div 
+                  <motion.div
                     key={feature.id}
                     className="flex items-start p-6 bg-gray-100  rounded-lg"
                     initial={{ opacity: 0, y: 20 }}
@@ -180,7 +180,7 @@
 
     const MVVCard = ({ title, icon, content }: MVVCardProps) => {
       return (
-        <motion.div 
+        <motion.div
           className="bg-white p-8 rounded-lg shadow-md text-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -208,7 +208,7 @@
 
     // const AccreditationCard = ({ name, description, icon }: AccreditationCardProps) => {
     //   return (
-    //     <motion.div 
+    //     <motion.div
     //       className="bg-neutral-50 p-6 rounded-lg border border-neutral-200 flex flex-col items-center"
     //       initial={{ opacity: 0, y: 20 }}
     //       whileInView={{ opacity: 1, y: 0 }}
@@ -242,7 +242,7 @@
     //   {
     //     id: 3,
     //     name: 'IMPTMP USA',
-    //     description: 'Chartered Institute of Marine, Port & Terminal Management Professionals USA, Membership No: C5200500-XXIII.',
+    //     description: 'Chartered Institute of Marine Port Terminal Management USA, Membership No: C5200500-XXIII.',
     //     icon: <CheckCircle className="h-12 w-12 text-primary-900" />,
     //   },
     //   {

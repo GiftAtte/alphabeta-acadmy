@@ -64,9 +64,9 @@
         <div class="header">
             <h1 style="margin: 0; font-size: 24px;">New Contact Form Submission</h1>
         </div>
-        
+
         <p>You have received a new message from the contact form on your website.</p>
-        
+
         <div class="contact-details">
             <div class="detail-row">
                 <span class="label">Name:</span> {{ $contact->name }}
@@ -86,17 +86,17 @@
                 <span class="label">Date:</span> {{ $contact->created_at->format('F j, Y, g:i a') }}
             </div>
         </div>
-        
+
         <h3>Message:</h3>
         <div class="message-box">
             <p>{{ $contact->message }}</p>
         </div>
-        
+
         <a href="{{ url('/admin/contacts/' . $contact->id) }}" class="cta-button">View in Dashboard</a>
-        
+
         <div class="footer">
-            <p>This is an automated email from Alpha Beta Academy.</p>
+            <p>This is an automated email from Alpha Beta Safety Academy.</p>
         </div>
     </div>
 </body>
-</html> 
+</html>

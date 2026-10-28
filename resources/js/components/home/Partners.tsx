@@ -114,11 +114,14 @@ const Partners = () => {
                   variants={itemVariants}
                   className="bg-white p-4 border border-neutral-200 rounded-lg hover:shadow-md transition-shadow flex items-center justify-center h-28"
                 >
-                  <img
-                    src={partner.image}
-                    alt={partner.name}
-                    className="max-h-16 max-w-full object-contain grayscale hover:grayscale-0 transition-all duration-300"
-                  />
+                  <div className="relative h-16 sm:h-20 md:h-24 overflow-hidden">
+                    <img
+                      src={partner.image}
+                      alt={partner.name}
+                      className="w-full h-full object-contain p-2"
+                      loading="lazy"
+                    />
+                  </div>
                 </motion.div>
               ))}
             </motion.div>

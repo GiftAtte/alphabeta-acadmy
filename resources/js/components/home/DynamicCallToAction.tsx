@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle, ArrowRight, Sparkles, Send, Award, BookOpen, Calendar, Clock, AlertCircle } from 'lucide-react';
+import { CheckCircle, ArrowRight, Sparkles, Send, Award, BookOpen, Calendar, Clock, AlertCircle, Phone } from 'lucide-react';
 import { Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import axios from 'axios';
+import { toast } from 'react-hot-toast';
 
 interface Training {
   id: string;
@@ -326,7 +327,7 @@ console.log('contact..............',contactResponse)
                     />
                   </div>
 
-                  <div>
+                  <div className="mb-4">
                     <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
                       Phone Number
                     </label>

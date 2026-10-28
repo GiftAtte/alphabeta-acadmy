@@ -53,30 +53,46 @@ const About = () => {
               <div className="relative z-10 grid grid-cols-2 gap-4">
                 <div className="aspect-[4/3] overflow-hidden rounded-lg">
                   <img
-                    src="/images/img10.jpeg"
+                    src="/images/img/img2.jpg"
                     alt="Safety training"
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    width="400"
+                    height="300"
+                    decoding="async"
                   />
                 </div>
                 <div className="aspect-[4/3] overflow-hidden rounded-lg mt-8">
                   <img
-                    src="/images/img11.jpeg"
+                    src="/images/img/img3.jpg"
                     alt="Practical session"
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    width="400"
+                    height="300"
+                    decoding="async"
                   />
                 </div>
                 <div className="aspect-[4/3] overflow-hidden rounded-lg">
                   <img
-                    src="/images/img12.jpeg"
+                    src="/images/img/img4.jpg"
                     alt="Certification ceremony"
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    width="400"
+                    height="300"
+                    decoding="async"
                   />
                 </div>
                 <div className="aspect-[4/3] overflow-hidden rounded-lg mt-8">
                   <img
-                    src="/images/img13.jpeg"
+                    src="/images/img/img5.jpg"
                     alt="Safety equipment"
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    width="400"
+                    height="300"
+                    decoding="async"
                   />
                 </div>
               </div>

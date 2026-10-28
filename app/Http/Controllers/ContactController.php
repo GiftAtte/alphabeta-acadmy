@@ -49,7 +49,7 @@ class ContactController extends Controller
             ]);
         } catch (\Exception $e) {
             Log::error('Contact form submission error: ' . $e->getMessage());
-            
+
             return response()->json([
                 'success' => false,
                 'message' => 'There was an error processing your request. Please try again later.',
@@ -111,8 +111,8 @@ class ContactController extends Controller
      */
     private function sendAdminNotification(Contact $contact)
     {
-        $adminEmail = 'info@alphabetacademy.org';
-        
+        $adminEmail = 'info@alphabetasafetyacademy.org';
+
         $data = [
             'contact' => $contact,
             'subject' => "New Contact Form Submission: {$contact->subject}"
@@ -139,4 +139,4 @@ class ContactController extends Controller
                 ->subject($data['subject']);
         });
     }
-} 
+}

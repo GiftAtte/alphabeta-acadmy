@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import Header from '@/components/web-nav';
+import Footer from '@/components/web-footer';
 
 interface Training {
   id: string;
@@ -220,6 +221,7 @@ export default function StudentEnrollment({ trainings }: Props) {
           </CardContent>
         </Card>
       </div>
+      <Footer />
     </>
   );
 }

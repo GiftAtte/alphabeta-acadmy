@@ -5,7 +5,8 @@ import axios from 'axios';
 
 interface Training {
   id?: string;
-  title: string;
+  name: string;
+  code: string;
   description: string;
   category: string;
   duration: number | string;
@@ -28,7 +29,8 @@ interface TrainingModalProps {
 }
 
 const emptyTraining: Training = {
-  title: '',
+  name: '',
+  code: '',
   description: '',
   category: '',
   duration: '',
@@ -49,7 +51,23 @@ export default function TrainingModal({ isOpen, onClose, training, mode, onSucce
 
   useEffect(() => {
     if (training && mode === 'edit') {
-      setFormData(training);
+      // Map the training data to match the form fields
+      setFormData({
+        id: training.id,
+        name: training.name || '',
+        code: training.code || '',
+        description: training.description || '',
+        category: training.category || '',
+        duration: training.duration || '',
+        price: training.price || '',
+        status: training.status || 'active',
+        start_date: training.start_date || '',
+        end_date: training.end_date || '',
+        instructor: training.instructor || '',
+        location: training.location || '',
+        max_students: training.max_students || 0,
+        current_students: training.current_students || 0
+      });
     } else {
       setFormData(emptyTraining);
     }
@@ -76,7 +94,7 @@ export default function TrainingModal({ isOpen, onClose, training, mode, onSucce
     setIsSubmitting(true);
 
     try {
-      // Convert price to number
+      // Convert numeric fields
       const submissionData = {
         ...formData,
         price: formData.price === '' ? null : Number(formData.price),
@@ -85,9 +103,30 @@ export default function TrainingModal({ isOpen, onClose, training, mode, onSucce
       };
 
       if (mode === 'create') {
-        await axios.post('/admin/trainings', submissionData);
-      } else {
-        await axios.put(`/admin/trainings/${training?.id}`, submissionData);
+        await axios.post('/admin/trainings', submissionData, {
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+      } else if (training?.id) {
+        // Add _method field for Laravel to handle PUT request
+        const formData = new FormData();
+        formData.append('_method', 'PUT');
+        Object.entries(submissionData).forEach(([key, value]) => {
+          formData.append(key, value as string);
+        });
+
+        await axios.post(`/admin/trainings/${training.id}`, formData, {
+          headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+            'Accept': 'application/json',
+            'Content-Type': 'multipart/form-data',
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
       }
 
       onSuccess();
@@ -114,36 +153,36 @@ export default function TrainingModal({ isOpen, onClose, training, mode, onSucce
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-              Training Title *
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              Training Name *
             </label>
             <input
               type="text"
-              id="title"
-              name="title"
-              value={formData.title}
+              id="name"
+              name="name"
+              value={formData.name}
               onChange={handleChange}
-              className={`w-full rounded-md border ${errors.title ? 'border-red-500' : 'border-gray-300'} py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+              className={`w-full rounded-md border ${errors.name ? 'border-red-500' : 'border-gray-300'} py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
             />
-            {errors.title && (
-              <p className="mt-1 text-sm text-red-600">{errors.title}</p>
+            {errors.name && (
+              <p className="mt-1 text-sm text-red-600">{errors.name}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-              Category *
+            <label htmlFor="code" className="block text-sm font-medium text-gray-700 mb-1">
+              Training Code *
             </label>
             <input
               type="text"
-              id="category"
-              name="category"
-              value={formData.category}
+              id="code"
+              name="code"
+              value={formData.code}
               onChange={handleChange}
-              className={`w-full rounded-md border ${errors.category ? 'border-red-500' : 'border-gray-300'} py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+              className={`w-full rounded-md border ${errors.code ? 'border-red-500' : 'border-gray-300'} py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
             />
-            {errors.category && (
-              <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+            {errors.code && (
+              <p className="mt-1 text-sm text-red-600">{errors.code}</p>
             )}
           </div>
 
@@ -165,11 +204,28 @@ export default function TrainingModal({ isOpen, onClose, training, mode, onSucce
           </div>
 
           <div>
+            <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
+              Category *
+            </label>
+            <input
+              type="text"
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              className={`w-full rounded-md border ${errors.category ? 'border-red-500' : 'border-gray-300'} py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
+            />
+            {errors.category && (
+              <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+            )}
+          </div>
+
+          <div>
             <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">
               Duration (hours)
             </label>
             <input
-              type="number"
+              type="text"
               id="duration"
               name="duration"
               min="0"
@@ -202,94 +258,8 @@ export default function TrainingModal({ isOpen, onClose, training, mode, onSucce
           </div>
 
           <div>
-            <label htmlFor="start_date" className="block text-sm font-medium text-gray-700 mb-1">
-              Start Date
-            </label>
-            <input
-              type="date"
-              id="start_date"
-              name="start_date"
-              value={formData.start_date}
-              onChange={handleChange}
-              className={`w-full rounded-md border ${errors.start_date ? 'border-red-500' : 'border-gray-300'} py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-            />
-            {errors.start_date && (
-              <p className="mt-1 text-sm text-red-600">{errors.start_date}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="end_date" className="block text-sm font-medium text-gray-700 mb-1">
-              End Date
-            </label>
-            <input
-              type="date"
-              id="end_date"
-              name="end_date"
-              value={formData.end_date}
-              onChange={handleChange}
-              className={`w-full rounded-md border ${errors.end_date ? 'border-red-500' : 'border-gray-300'} py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-            />
-            {errors.end_date && (
-              <p className="mt-1 text-sm text-red-600">{errors.end_date}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="instructor" className="block text-sm font-medium text-gray-700 mb-1">
-              Instructor
-            </label>
-            <input
-              type="text"
-              id="instructor"
-              name="instructor"
-              value={formData.instructor}
-              onChange={handleChange}
-              className={`w-full rounded-md border ${errors.instructor ? 'border-red-500' : 'border-gray-300'} py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-            />
-            {errors.instructor && (
-              <p className="mt-1 text-sm text-red-600">{errors.instructor}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="location" className="block text-sm font-medium text-gray-700 mb-1">
-              Location
-            </label>
-            <input
-              type="text"
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className={`w-full rounded-md border ${errors.location ? 'border-red-500' : 'border-gray-300'} py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-            />
-            {errors.location && (
-              <p className="mt-1 text-sm text-red-600">{errors.location}</p>
-            )}
-          </div>
-
-          <div>
-            <label htmlFor="max_students" className="block text-sm font-medium text-gray-700 mb-1">
-              Maximum Students
-            </label>
-            <input
-              type="number"
-              id="max_students"
-              name="max_students"
-              min="0"
-              value={formData.max_students}
-              onChange={handleChange}
-              className={`w-full rounded-md border ${errors.max_students ? 'border-red-500' : 'border-gray-300'} py-2 px-3 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent`}
-            />
-            {errors.max_students && (
-              <p className="mt-1 text-sm text-red-600">{errors.max_students}</p>
-            )}
-          </div>
-
-          <div>
             <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
-              Status *
+              Status
             </label>
             <select
               id="status"
@@ -301,16 +271,16 @@ export default function TrainingModal({ isOpen, onClose, training, mode, onSucce
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
               <option value="upcoming">Upcoming</option>
-              <option value="completed">Completed</option>
-              <option value="canceled">Canceled</option>
             </select>
             {errors.status && (
               <p className="mt-1 text-sm text-red-600">{errors.status}</p>
             )}
           </div>
+
+
         </div>
 
-        <div className="flex justify-end space-x-3 mt-6">
+        <div className="flex justify-end gap-3 mt-6">
           <Button
             type="button"
             variant="outline"

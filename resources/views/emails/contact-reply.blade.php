@@ -62,33 +62,33 @@
         <div class="header">
             <h1 style="margin: 0; font-size: 24px;">Response to Your Inquiry</h1>
         </div>
-        
+
         <p>Dear {{ $contact->name }},</p>
-        
-        <p>Thank you for contacting Alpha Beta Academy. We have received your message and are pleased to provide you with a response.</p>
-        
+
+        <p>Thank you for contacting Alpha Beta Safety Academy. We have received your message and are pleased to provide you with a response.</p>
+
         <div class="message-section">
             <div class="message-header">Our Response:</div>
             <div class="message-box">
                 <p>{{ $contact->admin_reply }}</p>
             </div>
-            
+
             <div class="message-header">Your Original Message ({{ $contact->created_at->format('F j, Y') }}):</div>
             <div class="original-message">
                 <p><strong>Subject:</strong> {{ $contact->subject }}</p>
                 <p>{{ $contact->message }}</p>
             </div>
         </div>
-        
+
         <p>If you have any further questions, please don't hesitate to contact us again.</p>
-        
+
         <p>Best regards,<br>
-        Alpha Beta Academy Team</p>
-        
+        Alpha Beta Safety Academy Team</p>
+
         <div class="footer">
             <p>This email is in response to your inquiry submitted through our website.</p>
-            <p>© {{ date('Y') }} Alpha Beta Academy. All rights reserved.</p>
+            <p>© {{ date('Y') }} Alpha Beta Safety Academy. All rights reserved.</p>
         </div>
     </div>
 </body>
-</html> 
+</html>

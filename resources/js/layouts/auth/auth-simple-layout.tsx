@@ -15,7 +15,7 @@ export default function AuthSimpleLayout({ children, title, description }: Props
                 <div className="absolute inset-0 bg-[url('/images/auth-bg.jpg')] bg-cover bg-center opacity-60 mix-blend-overlay"></div>
                 <div className="absolute inset-0 flex flex-col items-center justify-center p-12">
                     <div className="max-w-md text-center">
-                        <h2 className="text-3xl font-bold text-primary mb-6">Alpha Beta Academy</h2>
+                        <h2 className="text-3xl font-bold text-primary mb-6">Alpha Beta Safety Academy</h2>
                         <p className="text-xl text-foreground/80 mb-6">
                             Empowering through education. Join our platform for professional development and certification.
                         </p>
@@ -25,7 +25,7 @@ export default function AuthSimpleLayout({ children, title, description }: Props
                     </div>
                 </div>
             </div>
-            
+
             <div className="w-full lg:w-1/2 flex items-center justify-center p-6 md:p-10">
                 <div className="w-full max-w-md">
                     <div className="rounded-xl bg-card shadow-sm border p-8">

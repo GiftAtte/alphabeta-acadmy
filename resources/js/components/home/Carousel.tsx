@@ -10,26 +10,49 @@ import { useState } from 'react';
 import VerifyModal from './VerifyModal';
 
 const slides = [
+
+
+      {
+        image: "/images/img2.jpg",
+        title: "Accredited by National & International Bodies",
+        description: "Certified by ISPON, OSHAssociation UK, Chartered Institute of Marine Port Terminal Management USA, and more. Our credentials speak safety and quality."
+      },
+      {
+        image: "/images/bgImg2.jpg",
+        title: "Specialized Health & Safety Courses",
+        description: "From Firefighting and First Aid to Oil Field Rigging and Scaffolding – we train onshore and offshore professionals for safe environments."
+      },
+
   {
-    image: "/images/img1.jpg",
+    image: "/images/img15.jpg",
     title: "World-Class Safety Training Institute",
     description: "Delivering globally recognized safety certifications with modern, interactive training for the oil & gas, construction, and manufacturing industries."
   },
   {
     image: "/images/img2.jpg",
     title: "Accredited by National & International Bodies",
-    description: "Certified by ISPON, OSHAssociation UK, Chartered Institute of Marine, and more. Our credentials speak safety and quality."
+    description: "Certified by ISPON, OSHAssociation UK, Chartered Institute of Marine Port Terminal Management USA, and more. Our credentials speak safety and quality."
   },
   {
-    image: "/images/bgImg2.jpg",
+    image: "/images/img/img17.jpg",
     title: "Specialized Health & Safety Courses",
     description: "From Firefighting and First Aid to Oil Field Rigging and Scaffolding – we train onshore and offshore professionals for safe environments."
+  },
+  {
+    image: "/images/img/img18.jpg",
+    title: "Hands-On Learning with Expert Instructors",
+    description: "We focus on real-world skills, simulations, and practical training delivered by industry-leading professionals."
+  },
+  {
+    image: "/images/img1.jpg",
+    title: "World-Class Safety Training Institute",
+    description: "Delivering globally recognized safety certifications with modern, interactive training for the oil & gas, construction, and manufacturing industries."
   },
   {
     image: "/images/img1.jpg",
     title: "Hands-On Learning with Expert Instructors",
     description: "We focus on real-world skills, simulations, and practical training delivered by industry-leading professionals."
-  }
+  },
 ];
 
 const NavigationButtons = () => {

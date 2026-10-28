@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Book, Clock, Users, Search, Filter, BadgeCheck } from 'lucide-react';
+import { Book, Clock, Search, BadgeCheck, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import axios from 'axios';
 
 interface Course {
+  id: number;
   title: string;
   description: string;
   duration?: string;
   level?: 'Beginner' | 'Intermediate' | 'Advanced';
   category?: string;
-  featured?: boolean;
+  status?: 'active' | 'inactive' | 'upcoming';
+  price?: number;
+  code?: string;
 }
 
 const CourseList = () => {
@@ -19,126 +30,27 @@ const CourseList = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const courses: Course[] = [
-    {
-      title: "Introduction to HSE",
-      description: "A foundational course covering the basic principles of Health, Safety, and Environmental management in the workplace.",
-      duration: "2 days",
-      level: "Beginner",
-      category: "Health & Safety",
-      featured: true
-    },
-    {
-      title: "Accident Investigation",
-      description: "Learn methodologies to investigate workplace incidents, identify root causes, and implement preventive measures.",
-      duration: "3 days",
-      level: "Intermediate",
-      category: "Health & Safety"
-    },
-    {
-      title: "Confined Space Entry",
-      description: "Comprehensive training on safely entering, working in, and exiting confined spaces with proper hazard assessment.",
-      duration: "2 days",
-      level: "Intermediate",
-      category: "Health & Safety"
-    },
-    {
-      title: "Work at Height Safety",
-      description: "Essential training for preventing falls and ensuring safety when working at elevated positions.",
-      duration: "2 days",
-      level: "Intermediate",
-      category: "Health & Safety"
-    },
-    {
-      title: "Fire Fighting and Prevention",
-      description: "Practical skills and knowledge for fire prevention, emergency response, and proper use of firefighting equipment.",
-      duration: "3 days",
-      level: "Beginner",
-      category: "Emergency Response",
-      featured: true
-    },
-    {
-      title: "First Aid & CPR",
-      description: "Life-saving techniques for emergency situations including CPR, wound management, and handling medical emergencies.",
-      duration: "2 days",
-      level: "Beginner",
-      category: "Emergency Response",
-      featured: true
-    },
-    {
-      title: "Safety Statistics",
-      description: "Understanding and analyzing safety data to identify trends and improve workplace safety performance.",
-      duration: "1 day",
-      level: "Intermediate",
-      category: "Management"
-    },
-    {
-      title: "Job Hazard Analysis",
-      description: "Systematic approach to identifying workplace hazards and implementing effective control measures.",
-      duration: "2 days",
-      level: "Intermediate",
-      category: "Risk Assessment"
-    },
-    {
-      title: "Personal Protective Equipment",
-      description: "Selection, proper use, maintenance, and limitations of various personal protective equipment in different work environments.",
-      duration: "1 day",
-      level: "Beginner",
-      category: "Health & Safety"
-    },
-    {
-      title: "Environmental Safety",
-      description: "Managing environmental risks and ensuring compliance with environmental regulations in industrial settings.",
-      duration: "3 days",
-      level: "Intermediate",
-      category: "Environmental"
-    },
-    {
-      title: "Waste Management",
-      description: "Best practices for handling, storing, and disposing of various types of waste in accordance with environmental standards.",
-      duration: "2 days",
-      level: "Intermediate",
-      category: "Environmental"
-    },
-    {
-      title: "Good Housekeeping",
-      description: "Principles and practices for maintaining a clean, organized, and safe workplace to prevent accidents and improve efficiency.",
-      duration: "1 day",
-      level: "Beginner",
-      category: "Health & Safety"
-    },
-    {
-      title: "Maritime Safety",
-      description: "Specialized safety training for maritime environments, covering vessel safety, emergency procedures, and offshore risks.",
-      duration: "5 days",
-      level: "Advanced",
-      category: "Industry Specific",
-      featured: true
-    },
-    {
-      title: "HSE Management System",
-      description: "Comprehensive approach to developing and implementing effective health, safety, and environmental management systems.",
-      duration: "4 days",
-      level: "Advanced",
-      category: "Management"
-    },
-    {
-      title: "Advanced Fire Fighting and Prevention",
-      description: "Advanced techniques and strategies for complex fire scenarios, including industrial and chemical fires.",
-      duration: "5 days",
-      level: "Advanced",
-      category: "Emergency Response"
-    },
-    {
-      title: "Occupational Health and Safety",
-      description: "Fundamental principles and practices of occupational health and safety management in various industries.",
-      duration: "3 days",
-      level: "Beginner",
-      category: "Health & Safety"
-    },
-    // Simplified for brevity - remaining courses from the original list would each have descriptions added
-  ];
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/api/trainings');
+        setCourses(response.data.data);
+        setFilteredCourses(response.data.data);
+      } catch (err) {
+        console.error('Error fetching courses:', err);
+        setError('Failed to load courses. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
 
   // Get unique categories
   const categories = Array.from(new Set(courses.map(course => course.category))).filter(Boolean) as string[];
@@ -159,19 +71,10 @@ const CourseList = () => {
     }
 
     setFilteredCourses(result);
-  }, [searchQuery, activeFilter]);
+  }, [searchQuery, activeFilter, courses]);
 
   // Determine which courses to display
   const displayedCourses = showAll ? filteredCourses : filteredCourses.slice(0, 12);
-
-  const getLevelColor = (level?: string) => {
-    switch(level) {
-      case 'Beginner': return 'text-green-600';
-      case 'Intermediate': return 'text-blue-600';
-      case 'Advanced': return 'text-purple-600';
-      default: return 'text-gray-600';
-    }
-  };
 
   const getLevelBadge = (level?: string) => {
     switch(level) {
@@ -181,6 +84,22 @@ const CourseList = () => {
       default: return 'bg-gray-100 text-gray-800';
     }
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[400px]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="text-center p-8">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <section className="py-12 bg-background">
@@ -204,24 +123,23 @@ const CourseList = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <div className="flex gap-2 overflow-x-auto pb-2 w-full md:w-auto">
-              <Button
-                variant={activeFilter === null ? "secondary" : "outline"}
-                size="sm"
-                onClick={() => setActiveFilter(null)}
+            <div className="w-full md:w-64">
+              <Select
+                value={activeFilter || "all"}
+                onValueChange={(value) => setActiveFilter(value === "all" ? null : value)}
               >
-                All Courses
-              </Button>
-              {categories.map((category) => (
-                <Button
-                  key={category}
-                  variant={activeFilter === category ? "secondary" : "outline"}
-                  size="sm"
-                  onClick={() => setActiveFilter(category)}
-                >
-                  {category}
-                </Button>
-              ))}
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Filter by category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -240,8 +158,8 @@ const CourseList = () => {
               Featured Courses
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {courses.filter(course => course.featured).slice(0, 3).map((course, idx) => (
-                <Card key={`featured-${idx}`} className="overflow-hidden transition-all hover:shadow-md h-full border-primary/20">
+              {courses.filter(course => course.status === 'active').slice(0, 3).map((course) => (
+                <Card key={`featured-${course.id}`} className="overflow-hidden transition-all hover:shadow-md h-full border-primary/20">
                   <div className="absolute top-0 right-0">
                     <Badge className="m-2 bg-primary">Featured</Badge>
                   </div>
@@ -280,8 +198,8 @@ const CourseList = () => {
 
         {/* All Courses */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {displayedCourses.map((course, idx) => (
-            <Card key={idx} className="overflow-hidden transition-all hover:shadow-md h-full group">
+          {displayedCourses.map((course) => (
+            <Card key={course.id} className="overflow-hidden transition-all hover:shadow-md h-full group">
               {course.category && (
                 <div className="absolute top-0 left-0">
                   <Badge variant="outline" className="m-2 bg-background/80 backdrop-blur-sm">
@@ -317,13 +235,13 @@ const CourseList = () => {
                 </div>
               </CardContent>
             </Card>
-        ))}
-      </div>
+          ))}
+        </div>
 
         {filteredCourses.length > 12 && (
           <div className="flex justify-center mt-10">
             <Button
-          onClick={() => setShowAll(!showAll)}
+              onClick={() => setShowAll(!showAll)}
               variant="secondary"
               size="lg"
               className="px-8"

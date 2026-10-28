@@ -49,8 +49,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
 
     // Leads Management
     Route::get('/leads', [LeadController::class, 'index'])->name('admin.leads.index');
-    Route::put('/leads/{id}', [LeadController::class, 'update'])->name('admin.leads.update');
-    Route::delete('/leads/{id}', [LeadController::class, 'destroy'])->name('admin.leads.destroy');
+    Route::post('/leads', [LeadController::class, 'store'])->name('admin.leads.store');
+    Route::put('/leads/{lead}', [LeadController::class, 'update'])->name('admin.leads.update');
+    Route::delete('/leads/{lead}', [LeadController::class, 'destroy'])->name('admin.leads.destroy');
 
     // Contact Messages Management
     Route::get('/contacts', [ContactController::class, 'index'])->name('admin.contacts.index');
@@ -76,16 +77,16 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->group(functio
     Route::get('/students-dropdown', [StudentController::class, 'getStudentsForDropdown'])->name('students.dropdown');
 
     // Trainings Management - Inertia Pages
-    Route::get('/trainings', [TrainingController::class, 'index'])->name('trainings.index');
-    Route::get('/trainings/create', [TrainingController::class, 'create'])->name('trainings.create');
-    Route::get('/trainings/{training}/edit', [TrainingController::class, 'edit'])->name('trainings.edit');
-    Route::get('/trainings/{training}', [TrainingController::class, 'show'])->name('trainings.show');
-    Route::post('/trainings', [TrainingController::class, 'store'])->name('trainings.store');
-    Route::put('/trainings/{training}', [TrainingController::class, 'update'])->name('trainings.update');
-    Route::delete('/trainings/{training}', [TrainingController::class, 'destroy'])->name('trainings.destroy');
+    Route::get('/trainings', [TrainingController::class, 'index'])->name('admin.trainings.index');
+    Route::get('/trainings/create', [TrainingController::class, 'create'])->name('admin.trainings.create');
+    Route::get('/trainings/{training}/edit', [TrainingController::class, 'edit'])->name('admin.trainings.edit');
+    Route::get('/trainings/{training}', [TrainingController::class, 'show'])->name('admin.trainings.show');
+    Route::post('/trainings', [TrainingController::class, 'store'])->name('admin.trainings.store');
+    Route::put('/trainings/{training}', [TrainingController::class, 'update'])->name('admin.trainings.update');
+    Route::delete('/trainings/{training}', [TrainingController::class, 'destroy'])->name('admin.trainings.destroy');
 
     // API endpoint for training dropdowns
-    Route::get('/trainings-dropdown', [TrainingController::class, 'getTrainingsForDropdown'])->name('trainings.dropdown');
+    Route::get('/trainings-dropdown', [TrainingController::class, 'getTrainingsForDropdown'])->name('admin.trainings.dropdown');
 
     // Certificates Management - Inertia Pages
     Route::get('/certificates', [CertificateController::class, 'index'])->name('certificates.index');

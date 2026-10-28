@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AdminLayout from '@/layouts/admin-app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Plus, Pencil, Trash2, Bookmark, BookOpen, Clock, Users, Calendar, DollarSign } from 'lucide-react';
@@ -14,7 +14,8 @@ import type { ColumnDef } from '@/types';
 
 interface Training {
   id: string;
-  title: string;
+  name: string;
+  code: string;
   description: string;
   category: string;
   duration: number;
@@ -25,7 +26,7 @@ interface Training {
   location: string;
   status: string;
   created_at: string;
-  max_students: number;
+  max_students?: number;
   current_students: number;
 }
 
@@ -83,7 +84,7 @@ export default function TrainingsIndex({ trainings, statistics }: TrainingsPageP
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [trainingIdToDelete, setTrainingIdToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [trainingsList, setTrainingsList] = useState(trainings.data);
+  const [currentPage, setCurrentPage] = useState(trainings.current_page);
 
   const openCreateModal = () => {
     setModalMode('create');
@@ -108,25 +109,52 @@ export default function TrainingsIndex({ trainings, statistics }: TrainingsPageP
     setIsDeleting(true);
 
     try {
-      await axios.delete(`/admin/trainings/${trainingIdToDelete}`);
+      await axios.delete(`/admin/trainings/${trainingIdToDelete}`, {
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content'),
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      });
 
       // Update local state
-      setTrainingsList(prev => prev.filter(training => training.id !== trainingIdToDelete));
+      router.visit('/admin/trainings', {
+        preserveState: false,
+        preserveScroll: false,
+        replace: true
+      });
 
       toast.success('Training deleted successfully');
       setIsConfirmDeleteOpen(false);
     } catch (error) {
       console.error('Error deleting training:', error);
-      toast.error('Failed to delete training');
+      if (axios.isAxiosError(error)) {
+        toast.error(error.response?.data?.message || 'Failed to delete training');
+      } else {
+        toast.error('Failed to delete training');
+      }
     } finally {
       setIsDeleting(false);
       setTrainingIdToDelete(null);
     }
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    router.visit(`/admin/trainings?page=${page}`, {
+      preserveState: true,
+      preserveScroll: true,
+      only: ['trainings']
+    });
+  };
+
   const handleTrainingSaved = () => {
-    // Refresh the data
-    window.location.reload();
+    router.visit('/admin/trainings', {
+      preserveState: false,
+      preserveScroll: false,
+      replace: true
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -178,9 +206,13 @@ export default function TrainingsIndex({ trainings, statistics }: TrainingsPageP
       header: 'ID',
     },
     {
-      accessorKey: 'title',
-      header: 'Title',
-      cell: ({ row }) => <div className="font-medium">{row.original.title}</div>,
+      accessorKey: 'name',
+      header: 'Name',
+      cell: ({ row }) => <div className="font-medium">{row.original.name}</div>,
+    },
+    {
+      accessorKey: 'code',
+      header: 'Code',
     },
     {
       accessorKey: 'category',
@@ -340,15 +372,20 @@ export default function TrainingsIndex({ trainings, statistics }: TrainingsPageP
         <Card>
           <CardHeader>
             <CardTitle>All Trainings</CardTitle>
-            <CardDescription>Manage training programs and courses</CardDescription>
+            <CardDescription>Manage training programs and schedules</CardDescription>
           </CardHeader>
           <CardContent>
             <DataTable
               columns={columns}
-              data={trainingsList}
-              searchKey="title"
-              searchPlaceholder="Search by title..."
+              data={trainings.data}
+              searchKey="name"
+              searchPlaceholder="Search by name..."
               tablePrefix="trainings"
+              rowsPerPage={2}
+              pageCount={trainings.last_page}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              totalItems={trainings.total}
             />
           </CardContent>
         </Card>

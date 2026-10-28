@@ -139,7 +139,7 @@ export default function VerifyModal({ isOpen, onClose }: VerifyModalProps) {
                 </div>
                 <h3 className="mt-3 text-lg font-medium text-gray-900">Certificate Verified!</h3>
                 <p className="mt-2 text-sm text-gray-500">
-                  This certificate is valid and was issued by Alpha Beta Academy.
+                  This certificate is valid and was issued by Alpha Beta Safety Academy.
                 </p>
               </div>
             ) : (

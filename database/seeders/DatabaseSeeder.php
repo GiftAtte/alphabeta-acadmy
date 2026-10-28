@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             CertificatesTableSeeder::class,
             SiteVisitsTableSeeder::class,
             LeadsTableSeeder::class,
+            ContactSeeder::class,
         ]);
     }
 }

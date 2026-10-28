@@ -95,6 +95,7 @@ const LeadsIndex: React.FC<Props> = ({ leads }) => {
 
   const handleUpdate = (lead: Lead) => {
     setSelectedLead(lead);
+    reset();
     setData({
       status: lead.status,
       notes: lead.notes || '',
@@ -113,11 +114,15 @@ const LeadsIndex: React.FC<Props> = ({ leads }) => {
   };
 
   const submitUpdate = () => {
-    put(route('admin.leads.update', selectedLead?.id), {
+    if (!selectedLead) return;
+
+    put(route('admin.leads.update', selectedLead.id), {
+      preserveScroll: true,
+      preserveState: true,
       onSuccess: () => {
         setLeadsList(prev =>
           prev.map(lead =>
-            lead.id === selectedLead?.id
+            lead.id === selectedLead.id
               ? {
                   ...lead,
                   status: data.status as 'new' | 'contacted' | 'qualified' | 'converted' | 'closed',
@@ -129,6 +134,9 @@ const LeadsIndex: React.FC<Props> = ({ leads }) => {
         setIsUpdateOpen(false);
         reset();
       },
+      onError: (errors) => {
+        console.error('Error updating lead:', errors);
+      }
     });
   };
 
@@ -138,6 +146,9 @@ const LeadsIndex: React.FC<Props> = ({ leads }) => {
         setLeadsList(prev => prev.filter(lead => lead.id !== selectedLead?.id));
         setIsDeleteOpen(false);
       },
+      onError: (errors) => {
+        console.error('Error deleting lead:', errors);
+      }
     });
   };
 
@@ -185,7 +196,7 @@ const LeadsIndex: React.FC<Props> = ({ leads }) => {
     {
       accessorKey: 'training.name',
       header: 'Course Interest',
-      cell: ({ row }) => row.original.training.name,
+      cell: ({ row }) => row.original.training?.name || 'Not specified',
     },
     {
       accessorKey: 'status',
@@ -281,7 +292,7 @@ const LeadsIndex: React.FC<Props> = ({ leads }) => {
               )}
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Course Interest</h3>
-                <p className="mt-1">{selectedLead.training.name}</p>
+                <p className="mt-1">{selectedLead.training?.name || 'Not specified'}</p>
               </div>
               {selectedLead.message && (
                 <div>

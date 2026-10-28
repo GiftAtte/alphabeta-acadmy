@@ -1,11 +1,60 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Phone, Mail, MapPin, Clock, Send, ArrowRight, Building, MessageSquare } from 'lucide-react';
+import { Phone, Mail, MapPin, Clock, Send, MessageSquare } from 'lucide-react';
 import Layout from '@/layouts/web-layout';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import { Head } from '@inertiajs/react';
+import PageHeader from '../components/PageHeader';
+
+interface ContactHighlight {
+  icon: React.ReactNode;
+  title: string;
+  text: string;
+}
+
+interface ContactInfoItemProps {
+  icon: React.ReactNode;
+  title: string;
+  content: string[];
+}
+
+// Contact Info Item Component
+const ContactInfoItem = ({ icon, title, content }: ContactInfoItemProps) => (
+  <div className="flex items-start space-x-3">
+    <div className="text-white/90 mt-1 flex-shrink-0">
+      {icon}
+    </div>
+    <div>
+      <h3 className="font-semibold text-white">{title}</h3>
+      <div className="space-y-1">
+        {content.map((item, index) => (
+          <p key={index} className="text-white/80 text-sm">{item}</p>
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+// Contact Highlights Data
+const contactHighlights: ContactHighlight[] = [
+  {
+    icon: <Phone className="h-6 w-6" />,
+    title: "Phone Support",
+    text: "Call us directly for immediate assistance"
+  },
+  {
+    icon: <Mail className="h-6 w-6" />,
+    title: "Email Support",
+    text: "Send us an email for detailed inquiries"
+  },
+  {
+    icon: <Clock className="h-6 w-6" />,
+    title: "Quick Response",
+    text: "We typically respond within 24 hours"
+  }
+];
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -57,8 +106,8 @@ const ContactPage = () => {
         // Reset submission status after 5 seconds
         setTimeout(() => setSubmitted(false), 5000);
       }
-    } catch (error: any) {
-      if (error.response?.data?.errors) {
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && error.response?.data?.errors) {
         setErrors(error.response.data.errors);
         toast.error('Please correct the errors in the form.');
       } else {
@@ -69,34 +118,57 @@ const ContactPage = () => {
     }
   };
 
+  // Structured data for organization
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Alpha Beta Safety Academy",
+    "url": "https://alphabetacademy.org",
+    "logo": "/images/logo.jpeg",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "telephone": "+2348033404197",
+      "contactType": "customer service",
+      "email": "info@alphabetasafetyacademy.org",
+      "areaServed": "Nigeria",
+      "availableLanguage": ["English"]
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Road 5 Eliparanwo New-Layout off Ada Geroge",
+      "addressLocality": "Port Harcourt",
+      "addressRegion": "Rivers State",
+      "addressCountry": "Nigeria"
+    },
+    "openingHours": "Mo-Fr 08:00-17:00, Sa 09:00-13:00"
+  };
+
   return (
     <Layout>
-      {/* Hero section */}
-      <section className="relative bg-primary text-white overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <img
-            src="/images/marine.jpeg"
-            alt="Safety Training"
-            className="w-full h-full object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-primary-900 to-primary-800"></div>
-        </div>
+      <Head>
+        <title>Contact Us | Alpha Beta Safety Academy - Safety Training Institute</title>
+        <meta name="description" content="Get in touch with Alpha Beta Safety Academy for professional safety training courses. Contact us for inquiries about our accredited safety certification programs in Nigeria." />
+        <meta name="keywords" content="safety training contact, safety certification inquiry, training institute contact, safety courses Nigeria" />
+        <meta property="og:title" content="Contact Alpha Beta Safety Academy - Safety Training Institute" />
+        <meta property="og:description" content="Contact us for professional safety training courses and certification programs. We're here to help with your training needs." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://alphabetacademy.org/contact" />
+        <meta property="og:image" content="https://alphabetacademy.org/images/og-image.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <link rel="canonical" href="https://alphabetacademy.org/contact" />
+        <script type="application/ld+json">
+          {JSON.stringify(organizationSchema)}
+        </script>
+      </Head>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative z-10">
-          <div className="max-w-3xl">
-            <Badge variant="outline" className="mb-4 px-4 py-1.5 bg-white/20 text-white border-0">
-              Get In Touch
-            </Badge>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">Contact Us</h1>
-            <p className="text-xl text-white/90 mb-8 max-w-2xl">
-              Get in touch with our team to learn more about our courses or to discuss your training needs.
-            </p>
-          </div>
-        </div>
-      </section>
+      <PageHeader
+        title="Contact Us"
+        subtitle="Get in touch with our team to learn more about our courses or to discuss your training needs."
+        backgroundImage="/images/marine.jpeg"
+      />
 
       {/* Highlights Section */}
-      <section className="py-10 bg-slate-50">
+      <section className="py-10 bg-slate-50" aria-label="Contact options">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {contactHighlights.map((highlight, index) => (
@@ -108,11 +180,11 @@ const ContactPage = () => {
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
-                <div className="mr-5 bg-primary/10 p-3 rounded-full text-primary">
+                <div className="mr-5 bg-primary/10 p-3 rounded-full text-primary" aria-hidden="true">
                   {highlight.icon}
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-slate-900">{highlight.title}</h3>
+                  <h2 className="text-lg font-semibold text-slate-900">{highlight.title}</h2>
                   <p className="text-slate-600">{highlight.text}</p>
                 </div>
               </motion.div>
@@ -122,11 +194,11 @@ const ContactPage = () => {
       </section>
 
       {/* Contact Information and Form */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white" aria-label="Contact form and information">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
             <h2 className="text-3xl font-bold text-gray-900 mb-2">Get in Touch</h2>
-            <div className="w-24 h-1 bg-primary mx-auto mb-4"></div>
+            <div className="w-24 h-1 bg-primary mx-auto mb-4" aria-hidden="true"></div>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Have questions about our safety training programs? Our team is ready to help you find the right solution for your organization.
             </p>
@@ -135,12 +207,12 @@ const ContactPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             {/* Contact Information */}
             <div className="lg:col-span-5">
-              <div className="bg-gradient-to-br from-primary-700 to-primary-900 text-white h-full rounded-xl p-8 md:p-10 shadow-xl overflow-hidden relative">
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptNiA2djZoNnYtNmgtNnptLTEyIDBoNnY2aC02di02em0xMiA2aDZ2Nmgtdi0xMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-30 z-0"></div>
+              <div className="bg-gradient-to-br from-primary-500 to-primary-600 h-full rounded-xl p-8 md:p-10 shadow-xl overflow-hidden relative">
+                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDM0djZoNnYtNmgtNnptNiA2djZoNnYtNmgtNnptLTEyIDBoNnY2aC02di02em0xMiA2aDZ2Nmgtdi0xMnoiLz48L2c+PC9nPjwvc3ZnPg==')] opacity-30 z-0" aria-hidden="true"></div>
 
                 {/* Decorative elements */}
-                <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2 z-0"></div>
-                <div className="absolute bottom-0 right-0 w-40 h-40 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3 z-0"></div>
+                <div className="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2 z-0" aria-hidden="true"></div>
+                <div className="absolute bottom-0 right-0 w-40 h-40 bg-white/10 rounded-full translate-x-1/3 translate-y-1/3 z-0" aria-hidden="true"></div>
 
                 <div className="relative z-10">
                   <h2 className="text-3xl font-bold text-white mb-3">
@@ -152,34 +224,43 @@ const ContactPage = () => {
 
                   <div className="space-y-6">
                     <ContactInfoItem
-                      icon={<MapPin className="text-white" />}
+                      icon={<MapPin className="text-white/90" />}
                       title="Our Location"
                       content={[
-                        "123 Safety Drive, Victoria Island",
-                        "Lagos, Nigeria"
+                        "Road 5 Eliparanwo New-Layout off Ada Geroge, Port Harcourt",
+                        "Rivers State, Nigeria"
                       ]}
                     />
 
-                    <ContactInfoItem
-                      icon={<Phone className="text-white" />}
-                      title="Phone Number"
-                      content={[
-                        "+234 123 456 7890",
-                        "+234 987 654 3210"
-                      ]}
-                    />
+                    <div className="flex items-start space-x-3">
+                      <Phone className="text-white/90 mt-1 flex-shrink-0" size={20} aria-hidden="true" />
+                      <div>
+                        <h3 className="font-semibold text-white">Call Us</h3>
+                        <div className="space-y-1">
+                          <a href="tel:+2348033404197" className="text-white/80 hover:text-white transition-colors text-sm block">
+                            +234 803 340 4197
+                          </a>
+                          <a href="tel:+2349157452720" className="text-white/80 hover:text-white transition-colors text-sm block">
+                            +234 915 745 2720
+                          </a>
+                          <a href="tel:+2349027660870" className="text-white/80 hover:text-white transition-colors text-sm block">
+                            +234 902 766 0870
+                          </a>
+                        </div>
+                      </div>
+                    </div>
 
                     <ContactInfoItem
-                      icon={<Mail className="text-white" />}
+                      icon={<Mail className="text-white/90" />}
                       title="Email Address"
                       content={[
-                        "info@alphabetacademy.org",
-                        "training@alphabetacademy.org"
+                        "info@alphabetasafetyacademy.org",
+                        "training@alphabetasafetyacademy.org"
                       ]}
                     />
 
                     <ContactInfoItem
-                      icon={<Clock className="text-white" />}
+                      icon={<Clock className="text-white/90" />}
                       title="Working Hours"
                       content={[
                         "Monday - Friday: 8:00 AM - 5:00 PM",
@@ -193,45 +274,39 @@ const ContactPage = () => {
                       Connect With Us
                     </h3>
                     <div className="flex flex-wrap gap-4">
-                      {/* WhatsApp */}
-
-
-                      {/* Social Media Links */}
                       <div className="flex gap-2 flex-wrap">
                         <a
-                          href="https://facebook.com"
+                          href="https://facebook.com/alphabetacademy"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-12 h-12 bg-white/10 text-white flex items-center justify-center rounded-full hover:bg-blue-600 transition-colors"
-                          aria-label="Facebook"
+                          className="w-12 h-12 bg-white/10 text-white/90 hover:text-white flex items-center justify-center rounded-full hover:bg-blue-600 transition-colors"
+                          aria-label="Follow us on Facebook"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                           </svg>
                         </a>
 
-
-
                         <a
-                          href="https://twitter.com"
+                          href="https://twitter.com/alphabetacademy"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-12 h-12 bg-white/10 text-white flex items-center justify-center rounded-full hover:bg-black transition-colors"
-                          aria-label="Twitter/X"
+                          className="w-12 h-12 bg-white/10 text-white/90 hover:text-white flex items-center justify-center rounded-full hover:bg-black transition-colors"
+                          aria-label="Follow us on Twitter"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                           </svg>
                         </a>
 
                         <a
-                          href="https://linkedin.com"
+                          href="https://linkedin.com/company/alphabetacademy"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-12 h-12 bg-white/10 text-white flex items-center justify-center rounded-full hover:bg-blue-700 transition-colors"
-                          aria-label="LinkedIn"
+                          className="w-12 h-12 bg-white/10 text-white/90 hover:text-white flex items-center justify-center rounded-full hover:bg-blue-700 transition-colors"
+                          aria-label="Follow us on LinkedIn"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                             <rect x="2" y="9" width="4" height="12"></rect>
                             <circle cx="4" cy="4" r="2"></circle>
@@ -239,13 +314,13 @@ const ContactPage = () => {
                         </a>
 
                         <a
-                          href="https://instagram.com"
+                          href="https://instagram.com/alphabetacademy"
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="w-12 h-12 bg-white/10 text-white flex items-center justify-center rounded-full hover:bg-gradient-to-tr from-yellow-500 via-pink-600 to-purple-600 transition-colors"
-                          aria-label="Instagram"
+                          className="w-12 h-12 bg-white/10 text-white/90 hover:text-white flex items-center justify-center rounded-full hover:bg-gradient-to-tr from-yellow-500 via-pink-600 to-purple-600 transition-colors"
+                          aria-label="Follow us on Instagram"
                         >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                             <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
@@ -263,7 +338,7 @@ const ContactPage = () => {
               <div className="bg-white shadow-lg rounded-xl p-8">
                 <div className="mb-6">
                   <h2 className="text-3xl font-bold flex items-center gap-3 text-gray-900">
-                    <MessageSquare className="h-6 w-6 text-primary" />
+                    <MessageSquare className="h-6 w-6 text-primary" aria-hidden="true" />
                     Send Us a Message
                   </h2>
                   <p className="text-gray-500 mt-2">
@@ -276,8 +351,9 @@ const ContactPage = () => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-lg mb-6 flex items-start"
+                    role="alert"
                   >
-                    <div className="bg-green-100 p-1.5 rounded-full mr-3">
+                    <div className="bg-green-100 p-1.5 rounded-full mr-3" aria-hidden="true">
                       <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                       </svg>
@@ -289,7 +365,7 @@ const ContactPage = () => {
                   </motion.div>
                 ) : null}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-6" aria-label="Contact form">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label htmlFor="name" className="block text-sm font-medium text-slate-700">
@@ -381,33 +457,34 @@ const ContactPage = () => {
                       required
                       rows={6}
                       className={`w-full px-4 py-3 rounded-lg border ${errors.message ? 'border-red-500 focus:ring-red-500' : 'border-slate-200 focus:ring-primary'} focus:outline-none focus:ring-2 focus:border-transparent shadow-sm`}
-                      placeholder="Tell us about your training needs or any questions you have..."
-                    ></textarea>
+                      placeholder="Tell us about your inquiry..."
+                    />
                     {errors.message && (
                       <p className="mt-1 text-sm text-red-600">{errors.message}</p>
                     )}
                   </div>
 
-                  <div className="flex items-start flex-wrap gap-4">
+                  <div className="flex justify-end">
                     <Button
                       type="submit"
-                      className="px-6 py-3 flex items-center gap-2"
                       disabled={loading}
+                      className="w-full md:w-auto"
                     >
                       {loading ? (
-                        <>
-                          <div className="animate-spin w-4 h-4 border-2 border-current border-t-transparent rounded-full" />
+                        <span className="flex items-center gap-2">
+                          <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                          </svg>
                           Sending...
-                        </>
+                        </span>
                       ) : (
-                        <>
-                          <Send className="h-4 w-4" />
+                        <span className="flex items-center gap-2">
+                          <Send className="h-5 w-5" />
                           Send Message
-                        </>
+                        </span>
                       )}
                     </Button>
-
-
                   </div>
                 </form>
               </div>
@@ -415,71 +492,7 @@ const ContactPage = () => {
           </div>
         </div>
       </section>
-
-      {/* Map Section */}
-      <section className="py-16 bg-slate-50">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Find Us</h2>
-            <p className="text-gray-500 mt-2">Visit our training center in Lagos</p>
-          </div>
-
-          <div className="relative h-96 rounded-xl overflow-hidden shadow-lg">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63427.97620795932!2d3.364980535506093!3d6.4515393669227755!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x103bf4cc9b07f215%3A0x4c66d98482997d01!2sVictoria%20Island%2C%20Lagos!5e0!3m2!1sen!2sng!4v1626299955065!5m2!1sen!2sng"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              title="Alpha Beta Academy Location"
-            ></iframe>
-          </div>
-        </div>
-      </section>
     </Layout>
-  );
-};
-
-const contactHighlights = [
-  {
-    icon: <Phone className="h-6 w-6" />,
-    title: "Talk to Us",
-    text: "Have questions? Call us directly for immediate assistance."
-  },
-  {
-    icon: <MessageSquare className="h-6 w-6" />,
-    title: "Chat Support",
-    text: "Connect with our support team via WhatsApp or live chat."
-  },
-  {
-    icon: <Building className="h-6 w-6" />,
-    title: "Visit Our Center",
-    text: "Come see our state-of-the-art training facilities in Lagos."
-  },
-];
-
-interface ContactInfoItemProps {
-  icon: React.ReactNode;
-  title: string;
-  content: string[];
-}
-
-const ContactInfoItem = ({ icon, title, content }: ContactInfoItemProps) => {
-  return (
-    <div className="flex items-start">
-      <div className="mr-3 text-white">{icon}</div>
-      <div>
-        <h4 className="font-semibold text-white">{title}</h4>
-        <div className="mt-1 space-y-1">
-          {content.map((line, i) => (
-            <p key={i} className="text-white/80 text-sm">
-              {line}
-            </p>
-          ))}
-        </div>
-      </div>
-    </div>
   );
 };
 

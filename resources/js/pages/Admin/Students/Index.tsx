@@ -3,7 +3,7 @@ import AdminLayout from '@/layouts/admin-app-layout';
 import { Head, useForm, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { UserPlus, Pencil, Trash2, CheckCircle, XCircle, UserCog, Users, CalendarDays } from 'lucide-react';
+import { UserPlus, Pencil, Trash2, CheckCircle, XCircle, UserCog, Users, CalendarDays, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import StudentModal from '@/components/admin/StudentModal';
@@ -81,7 +81,7 @@ export default function StudentsIndex({ students, statistics }: StudentsPageProp
   const [selectedStudent, setSelectedStudent] = useState<Student | undefined>(undefined);
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [studentIdToDelete, setStudentIdToDelete] = useState<string | null>(null);
-  const [studentsList, setStudentsList] = useState(students.data);
+  const [currentPage, setCurrentPage] = useState(students.current_page);
 
   // Setup Inertia form for delete operation
   const { delete: destroy, processing: isDeleting } = useForm();
@@ -108,8 +108,6 @@ export default function StudentsIndex({ students, statistics }: StudentsPageProp
 
     destroy(`/admin/students/${studentIdToDelete}`, {
       onSuccess: () => {
-        // Update local state
-        setStudentsList(prev => prev.filter(student => student.id !== studentIdToDelete));
         toast.success('Student deleted successfully');
         setIsConfirmDeleteOpen(false);
         setStudentIdToDelete(null);
@@ -230,6 +228,15 @@ export default function StudentsIndex({ students, statistics }: StudentsPageProp
     },
   ];
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    router.visit(`/admin/students?page=${page}`, {
+      preserveState: true,
+      preserveScroll: true,
+      only: ['students']
+    });
+  };
+
   return (
     <AdminLayout breadcrumbs={breadcrumbs}>
       <Head title="Students Management" />
@@ -291,8 +298,6 @@ export default function StudentsIndex({ students, statistics }: StudentsPageProp
           </Card>
         </div>
 
-
-
         {/* Student Records Table */}
         <Card>
           <CardHeader>
@@ -302,10 +307,15 @@ export default function StudentsIndex({ students, statistics }: StudentsPageProp
           <CardContent>
             <DataTable
               columns={columns}
-              data={studentsList}
+              data={students.data}
               searchKey="email"
               searchPlaceholder="Search by email..."
               tablePrefix="students"
+              rowsPerPage={2}
+              pageCount={students.last_page}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              totalItems={students.total}
             />
           </CardContent>
         </Card>

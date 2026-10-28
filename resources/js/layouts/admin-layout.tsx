@@ -9,7 +9,8 @@ import {
   X,
   LogOut,
   Settings,
-  Home
+  Home,
+  MessageSquare
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -25,6 +26,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     { name: 'Students', href: '/admin/students', icon: Users, current: component === 'Admin/Students/Index' },
     { name: 'Certificates', href: '/admin/certificates', icon: Award, current: component === 'Admin/Certificates/Index' },
     { name: 'Trainings', href: '/admin/trainings', icon: BookOpen, current: component === 'Admin/Trainings/Index' },
+    { name: 'Leads', href: '/admin/leads', icon: MessageSquare, current: component === 'Admin/Leads/Index' },
   ];
 
   const toggleSidebar = () => {

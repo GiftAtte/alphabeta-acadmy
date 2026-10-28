@@ -143,7 +143,7 @@ const CallToAction = () => {
                       <option value="firstaid">First Aid & CPR</option>
                       <option value="offshore">Offshore Safety Training</option>
                       <option value="confined">Confined Space Entry</option>
-                      <option value="hazmat">HAZMAT Handling</option>
+                      <option value="material">Material Handling</option>
                     </select>
                   </div>
 

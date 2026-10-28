@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import AdminLayout from '@/layouts/admin-app-layout';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { UserPlus, Pencil, Trash2, CheckCircle, XCircle, DollarSign } from 'lucide-react';
@@ -56,7 +56,7 @@ export default function EnrollmentsIndex({ enrollments }: EnrollmentsPageProps) 
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [enrollmentIdToDelete, setEnrollmentIdToDelete] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-  const [enrollmentsList, setEnrollmentsList] = useState(enrollments.data);
+  const [currentPage, setCurrentPage] = useState(enrollments.current_page);
 
   const openCreateModal = () => {
     setModalMode('create');
@@ -84,7 +84,11 @@ export default function EnrollmentsIndex({ enrollments }: EnrollmentsPageProps) 
       await axios.delete(`/admin/enrollments/${enrollmentIdToDelete}`);
 
       // Update local state
-      setEnrollmentsList(prev => prev.filter(enrollment => enrollment.id !== enrollmentIdToDelete));
+      router.visit('/admin/enrollments', {
+        preserveState: false,
+        preserveScroll: false,
+        replace: true
+      });
 
       toast.success('Enrollment deleted successfully');
       setIsConfirmDeleteOpen(false);
@@ -97,9 +101,21 @@ export default function EnrollmentsIndex({ enrollments }: EnrollmentsPageProps) 
     }
   };
 
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    router.visit(`/admin/enrollments?page=${page}`, {
+      preserveState: true,
+      preserveScroll: true,
+      only: ['enrollments']
+    });
+  };
+
   const handleEnrollmentSaved = () => {
-    // Refresh the data
-    window.location.reload();
+    router.visit('/admin/enrollments', {
+      preserveState: false,
+      preserveScroll: false,
+      replace: true
+    });
   };
 
   const formatDate = (dateString: string | null) => {
@@ -264,15 +280,20 @@ export default function EnrollmentsIndex({ enrollments }: EnrollmentsPageProps) 
         <Card>
           <CardHeader>
             <CardTitle>All Enrollments</CardTitle>
-            <CardDescription>Manage student enrollments in training programs</CardDescription>
+            <CardDescription>Manage student enrollments and their status</CardDescription>
           </CardHeader>
           <CardContent>
             <DataTable
               columns={columns}
-              data={enrollmentsList}
+              data={enrollments.data}
               searchKey="email"
               searchPlaceholder="Search by student email..."
               tablePrefix="enrollments"
+              rowsPerPage={2}
+              pageCount={enrollments.last_page}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+              totalItems={enrollments.total}
             />
           </CardContent>
         </Card>

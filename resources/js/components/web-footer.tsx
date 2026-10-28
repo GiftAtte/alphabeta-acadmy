@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/react';
 import { Phone, Mail, MapPin, Facebook, Twitter, Linkedin, Instagram, ChevronRight, Send, Clock, Award, CheckCircle, Shield } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
+import WhatsAppButton from './WhatsAppButton';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -72,9 +73,17 @@ const Footer = () => {
                   <Phone className="text-primary mt-1 flex-shrink-0" size={20} />
                   <div>
                     <h3 className="font-semibold text-gray-900">Call Us</h3>
-                    <a href="tel:+2341234567890" className="text-gray-600 hover:text-primary transition-colors text-sm">
-                      +234 123 456 7890
-                    </a>
+                    <div className="space-y-1">
+                      <a href="tel:+2348033404197" className="text-gray-600 hover:text-primary transition-colors text-sm block">
+                        +234 803 340 4197
+                      </a>
+                      <a href="tel:+2349157452720" className="text-gray-600 hover:text-primary transition-colors text-sm block">
+                        +234 915 745 2720
+                      </a>
+                      <a href="tel:+2349027660870" className="text-gray-600 hover:text-primary transition-colors text-sm block">
+                        +234 902 766 0870
+                      </a>
+                    </div>
                   </div>
                 </div>
 
@@ -82,8 +91,8 @@ const Footer = () => {
                   <Mail className="text-primary mt-1 flex-shrink-0" size={20} />
                   <div>
                     <h3 className="font-semibold text-gray-900">Email Us</h3>
-                    <a href="mailto:info@alphabetacademy.org" className="text-gray-600 hover:text-primary transition-colors text-sm">
-                      info@alphabetacademy.org
+                    <a href="mailto:info@alphabetasafetyacademy.org" className="text-gray-600 hover:text-primary transition-colors text-sm">
+                      info@alphabetasafetyacademy.org
                     </a>
                   </div>
                 </div>
@@ -92,7 +101,7 @@ const Footer = () => {
                   <MapPin className="text-primary mt-1 flex-shrink-0" size={20} />
                   <div>
                     <h3 className="font-semibold text-gray-900">Our Location</h3>
-                    <p className="text-gray-600 text-sm">123 Safety Drive, Lagos, Nigeria</p>
+                    <p className="text-gray-600 text-sm">Road 5 Eliparanwo New-Layout off Ada Geroge, Port Harcourt, Rivers State, Nigeria</p>
                   </div>
                 </div>
 
@@ -107,7 +116,10 @@ const Footer = () => {
 
               {/* WhatsApp Contact Button */}
               <div className="mt-4 p-6">
-
+                <WhatsAppButton
+                  phoneNumber="+2348033404197"
+                  message="Hello, I'm interested in learning more about your training programs."
+                />
               </div>
             </div>
 
@@ -206,8 +218,15 @@ const Footer = () => {
           {/* Company Info */}
           <div>
               <div className="flex items-center space-x-3 mb-6">
-                <div className="w-12 h-12 overflow-hidden rounded-full bg-white">
-                  <img src='/images/logo.jpeg' className='w-full h-full object-cover' alt="Logo" />
+                <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-primary shadow-sm">
+                  <img
+                    src='/images/logo.jpeg'
+                    className="w-full h-full object-cover"
+                    alt="Alpha Beta Safety Academy Logo"
+                    loading="lazy"
+                    width="64"
+                    height="64"
+                  />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold">ALPHA BETA</h3>
@@ -267,7 +286,7 @@ const Footer = () => {
                   { name: 'Fire Safety & Prevention', path: '/courses' },
                   { name: 'Offshore Safety Training', path: '/courses' },
                   { name: 'Confined Space Entry', path: '/courses' },
-                  { name: 'HAZMAT Handling', path: '/courses' },
+                  { name: 'Material Handling', path: '/courses' },
                 ].map((course, index) => (
                   <li key={index} className="flex items-center group">
                     <CheckCircle size={16} className="text-secondary mr-2" />
@@ -307,10 +326,10 @@ const Footer = () => {
                   <Award className="mr-2" size={18} />
                   Certifications
                 </h4>
-                <div className="flex flex-wrap gap-3">
-                  <img src="/images/brand1.jpeg" alt="Certification" className="h-12 w-auto bg-white p-1 rounded" />
-                  <img src="/images/brand2.jpeg" alt="Certification" className="h-12 w-auto bg-white p-1 rounded" />
-                  <img src="/images/brand3.jpeg" alt="Certification" className="h-12 w-auto bg-white p-1 rounded" />
+                <div className="flex flex-wrap justify-center gap-4 items-center">
+                  <img src="/images/brand1.jpeg" alt="Certification" className="h-8 sm:h-10 md:h-12 w-auto bg-white p-1 rounded" loading="lazy" />
+                  <img src="/images/brand2.jpeg" alt="Certification" className="h-8 sm:h-10 md:h-12 w-auto bg-white p-1 rounded" loading="lazy" />
+                  <img src="/images/brand3.jpeg" alt="Certification" className="h-8 sm:h-10 md:h-12 w-auto bg-white p-1 rounded" loading="lazy" />
                 </div>
               </div>
             </div>
@@ -322,7 +341,7 @@ const Footer = () => {
       <div className="bg-gray-900 py-6">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-400">&copy; {currentYear} ALPHA BETA SAFETY ACADEMY. All rights reserved.</p>
+            <p className="text-sm text-gray-400">&copy; {currentYear} ALPHA BETA SAFETY ACADEMY (ABSA) RC # 6874094. All rights reserved.</p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <Link href="/privacy-policy" className="text-sm text-gray-400 hover:text-white transition-colors">
                 Privacy Policy

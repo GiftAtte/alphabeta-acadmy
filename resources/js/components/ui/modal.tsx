@@ -31,8 +31,8 @@ const Modal = ({ isOpen, onClose, title, size = 'md', children, closeOnOutsideCl
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className={`${sizeClasses[size]} p-0 overflow-hidden`}>
-        <div className="flex justify-between items-center p-4 border-b">
+      <DialogContent className={`${sizeClasses[size]} p-0 max-h-[90vh] flex flex-col`}>
+        <div className="flex justify-between items-center p-4 border-b flex-shrink-0">
           {title && (
             <DialogTitle className="text-lg font-medium">
               {title}
@@ -47,7 +47,7 @@ const Modal = ({ isOpen, onClose, title, size = 'md', children, closeOnOutsideCl
             <span className="sr-only">Close</span>
           </button>
         </div>
-        <div className="p-6">
+        <div className="p-6 overflow-y-auto flex-grow">
           {children}
         </div>
       </DialogContent>

@@ -6,23 +6,23 @@ import 'swiper/css'
 import 'swiper/css/navigation'
 
 const images = [
-    '/images/img1.jpeg',
-    '/images/img2.jpeg',
-    '/images/img3.jpeg',
-    '/images/img4.jpeg',
-    '/images/img5.jpeg',
-    '/images/img6.jpeg',
-    '/images/img7.jpeg',
-    '/images/img8.jpeg',
-    '/images/img10.jpeg',
-    '/images/img11.jpeg',
-    '/images/img12.jpeg',
-    '/images/img13.jpeg',
-    '/images/img14.jpeg',
-    '/images/img15.jpeg',
-    '/images/img16.jpeg',
-    '/images/img17.jpeg',
-    '/images/img18.jpeg',
+    '/images/img/img1.jpg',
+    '/images/img/img2.jpg',
+    '/images/img/img3.jpg',
+    '/images/img/img4.jpg',
+    '/images/img/img5.jpg',
+    '/images/img/img6.jpg',
+    '/images/img/img7.jpg',
+    '/images/img/img8.jpg',
+    '/images/img/img9.jpg',
+    '/images/img/img10.jpg',
+    '/images/img/img11.jpg',
+    '/images/img/img12.jpg',
+    '/images/img/img13.jpg',
+    '/images/img/img14.jpg',
+    '/images/img/img15.jpg',
+    '/images/img/img16.jpg',
+    '/images/img/img17.jpg',
 ]
 
 export default function SlideOpacity() {
@@ -56,6 +56,10 @@ export default function SlideOpacity() {
                                 src={src}
                                 alt={`Slide ${index + 1}`}
                                 className="w-full h-64 object-cover"
+                                loading="lazy"
+                                width="400"
+                                height="256"
+                                decoding="async"
                             />
                         </div>
                     </SwiperSlide>

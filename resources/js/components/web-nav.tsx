@@ -55,28 +55,28 @@ const Header = () => {
       {/* Top Contact Bar - Hidden when scrolled */}
       <div
         className={cn(
-          "bg-primary text-primary-foreground py-2 transition-all duration-300",
+          "bg-primary text-primary-foreground py-2 transition-all duration-300 hidden md:block",
           isScrolled ? "opacity-0 h-0 py-0 overflow-hidden" : "opacity-100"
         )}
       >
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-between items-center">
             <div className="flex items-center space-x-4">
-              <a href="tel:+2348123456789" className="flex items-center text-sm">
+              <a href="tel:+2348033404197" className="hidden md:flex items-center text-sm text-white">
                 <Phone className="h-4 w-4 mr-1" />
-                <span className="hidden sm:inline">+234 812 345 6789</span>
+                +234 803 340 4197
               </a>
-              <a href="mailto:info@alphabeta.com" className="flex items-center text-sm">
+              <a href="mailto:info@alphabetasafetyacademy.org" className="flex items-center text-sm text-white">
                 <Mail className="h-4 w-4 mr-1" />
-                <span className="hidden sm:inline">info@alphabeta.com</span>
+                <span className="hidden sm:inline">info@alphabetasafetyacademy.org</span>
               </a>
             </div>
             <div className="hidden md:flex items-center space-x-4">
-              <div className="flex items-center text-sm">
-                <MapPin className="h-4 w-4 mr-1" />
-                <span>Port Harcourt, Nigeria</span>
+              <div className="flex items-center text-sm text-white max-w-md">
+                <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
+                <span className="truncate">Road 5 Eliparanwo New-Layout off Ada Geroge, Port Harcourt, Rivers State, Nigeria</span>
               </div>
-              <div className="flex items-center text-sm">
+              <div className="flex items-center text-sm text-white">
                 <Clock className="h-4 w-4 mr-1" />
                 <span>Mon-Fri: 8:00AM - 5:00PM</span>
               </div>
@@ -95,12 +95,20 @@ const Header = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <a href="/" className="flex items-center space-x-3">
-              <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-primary shadow-sm">
-                <img src="/images/logo.jpeg" className="w-full h-full object-cover" alt="Alpha Beta Safety Academy Logo" />
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-2 border-primary shadow-sm">
+                <img
+                  src="/images/logo.jpeg"
+                  className="w-full h-full object-cover"
+                  alt="Alpha Beta Safety Academy Logo"
+                  loading="eager"
+                  fetchPriority="high"
+                  width="64"
+                  height="64"
+                />
               </div>
               <div className="hidden md:block">
                 <h1 className="font-bold text-lg text-primary">ALPHA BETA</h1>
-                <p className="text-xs text-gray-600">SAFETY ACADEMY</p>
+                <p className="text-xs text-gray-600">SAFETY ACADEMY  </p>
               </div>
             </a>
 
@@ -253,17 +261,19 @@ const Header = () => {
               <div className="mt-6 pt-4 border-t border-gray-100">
                 <h3 className="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">Contact Us</h3>
                 <div className="space-y-2">
-                  <a href="tel:+2348123456789" className="flex items-center text-sm text-gray-600">
+                  <a href="tel:+2348033404197" className="flex items-center text-sm text-gray-600">
                     <Phone className="h-4 w-4 mr-2 text-primary" />
-                    <span>+234 812 345 6789</span>
+                    +234 803 340 4197
                   </a>
-                  <a href="mailto:info@alphabeta.com" className="flex items-center text-sm text-gray-600">
+
+
+                  <a href="mailto:info@alphabetasafetyacademy.org" className="flex items-center text-sm text-gray-600">
                     <Mail className="h-4 w-4 mr-2 text-primary" />
-                    <span>info@alphabeta.com</span>
+                    <span>info@alphabetasafetyacademy.org</span>
                   </a>
                   <div className="flex items-center text-sm text-gray-600">
                     <MapPin className="h-4 w-4 mr-2 text-primary" />
-                    <span>Lagos, Nigeria</span>
+                    <span>Road 5 Eliparanwo New-Layout off Ada Geroge, Port Harcourt, Rivers State, Nigeria</span>
                   </div>
                   <div className="flex items-center text-sm text-gray-600">
                     <Clock className="h-4 w-4 mr-2 text-primary" />

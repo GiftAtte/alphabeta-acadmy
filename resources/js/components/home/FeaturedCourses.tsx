@@ -188,18 +188,19 @@ const CourseCard = ({ course }: CourseCardProps) => {
       whileHover={{ y: -8, transition: { duration: 0.3 } }}
       className="h-full"
     >
-      <Card className="h-full overflow-hidden shadow-md hover:shadow-xl transition-all border-0 rounded-xl">
+      <Card className="h-full overflow-hidden shadow-md hover:shadow-xl transition-all border-0 rounded-xl relative">
         {course.featured && (
           <div className="absolute top-3 right-3 z-10">
             <Badge className="bg-primary border-0">Featured</Badge>
           </div>
         )}
 
-        <div className="relative h-52 overflow-hidden">
+        <div className="relative h-48 sm:h-52 md:h-56 lg:h-60 overflow-hidden">
           <img
             src={course.image}
             alt={course.title}
-            className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-300 hover:scale-110"
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
           <div className="absolute bottom-3 left-3">
