@@ -11,7 +11,7 @@ const Layout = ({ children }: PropsWithChildren) => {
         {children}
       </main>
       <Footer/>
-      <WhatsAppButton phoneNumber="+2341234567890" />
+      <WhatsAppButton phoneNumber="+2348033404197" />
     </div>
   );
 };
